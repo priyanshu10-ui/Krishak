@@ -375,6 +375,9 @@ function renderCropHealth() {
 function handleImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
+  
+  const lang = localStorage.getItem("selectedLanguage") || "en";
+  const t = translations[lang];
   const zone = document.getElementById('upload-zone');
   const reader = new FileReader();
   reader.onload = function (e) {
@@ -1199,12 +1202,24 @@ window.stopRecording = function () {
 
 window.uploadCapturedMedia = function () {
 
+  
+    console.log("UPLOAD BUTTON CLICKED");
+
+    // Check captured file
   if (!capturedFile) {
     alert("Please capture a photo or video first.");
     return;
   }
 
-  // Photo
+
+   console.log("Captured file:", capturedFile);
+    console.log("File type:", capturedFile.type);
+
+    // ===============================
+    // PHOTO
+    // ===============================
+
+    
   if (capturedFile.type.startsWith("image/")) {
 
     const input = document.getElementById("file-input");
