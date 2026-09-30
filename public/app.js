@@ -1101,3 +1101,31 @@ function loginAsDemoUser() {
   if (typeof updateAppHeader === "function") updateAppHeader();
   if (typeof navigateTo === "function") navigateTo("dashboard");
 }
+// Function to notify Flutter wrapper safely
+function notifyFlutterTheme(isDark) {
+  if (window.ThemeChannel && typeof window.ThemeChannel.postMessage === "function") {
+    window.ThemeChannel.postMessage(isDark ? "dark" : "light");
+  }
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+
+  if (isDark) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+
+  updateThemeIcon(isDark);
+  notifyFlutterTheme(isDark);
+}
+
+function toggleDarkMode() {
+  const isDark = document.documentElement.classList.toggle("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  updateThemeIcon(isDark);
+  notifyFlutterTheme(isDark); // Triggers instant status bar update in Flutter app
+}
