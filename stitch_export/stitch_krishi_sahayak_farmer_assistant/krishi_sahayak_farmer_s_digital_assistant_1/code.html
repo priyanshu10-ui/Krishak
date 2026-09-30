@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Krishi Sahayak - Farmer Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c2c9bb",
+                    "on-tertiary-container": "#accba5",
+                    "surface-dim": "#d9dad9",
+                    "secondary": "#895100",
+                    "on-tertiary-fixed": "#062108",
+                    "on-secondary-container": "#6c3f00",
+                    "primary-fixed": "#bcf0ae",
+                    "background": "#f8faf9",
+                    "tertiary": "#253f23",
+                    "primary-fixed-dim": "#a1d494",
+                    "surface-container": "#edeeed",
+                    "on-secondary-fixed": "#2c1700",
+                    "on-background": "#191c1c",
+                    "tertiary-fixed": "#cbebc3",
+                    "inverse-surface": "#2e3131",
+                    "outline": "#72796e",
+                    "secondary-fixed-dim": "#ffb86c",
+                    "tertiary-container": "#3b5739",
+                    "error": "#ba1a1a",
+                    "surface": "#f8faf9",
+                    "on-primary-fixed": "#002201",
+                    "inverse-on-surface": "#f0f1f0",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#afcfa9",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#9dd090",
+                    "on-surface": "#191c1c",
+                    "on-tertiary-fixed-variant": "#324d30",
+                    "secondary-fixed": "#ffdcbc",
+                    "surface-bright": "#f8faf9",
+                    "inverse-primary": "#a1d494",
+                    "primary": "#154212",
+                    "surface-tint": "#3b6934",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e1e3e2",
+                    "surface-container-highest": "#e1e3e2",
+                    "primary-container": "#2d5a27",
+                    "surface-container-high": "#e7e8e7",
+                    "on-primary-fixed-variant": "#23501e",
+                    "secondary-container": "#ffa536",
+                    "surface-container-low": "#f3f4f3",
+                    "on-surface-variant": "#42493e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#683c00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Lexend"],
+                    "headline-md": ["Lexend"],
+                    "body-lg": ["Public Sans"],
+                    "caption": ["Public Sans"],
+                    "label-md": ["Public Sans"],
+                    "display-lg": ["Lexend"],
+                    "body-md": ["Public Sans"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #f8faf9;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/80 backdrop-blur-md border-b border-stone-100 shadow-sm shadow-green-900/5 font-lexend antialiased">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-800" style="font-variation-settings: 'FILL' 1;">agriculture</span>
+<h1 class="text-xl font-extrabold tracking-tight text-green-800">Krishi Sahayak</h1>
+</div>
+<div class="hidden md:flex flex-1 max-w-md mx-8">
+<div class="relative w-full">
+<input class="w-full pl-10 pr-4 py-2 bg-stone-100 border-none rounded-full text-sm focus:ring-2 focus:ring-primary-container" placeholder="Search for crops, markets, or advice..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-stone-500 text-sm">search</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-stone-500 hover:bg-stone-50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-stone-500 hover:bg-stone-50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<div class="flex pt-16 pb-20 lg:pb-0 min-h-screen">
+<!-- SideNavBar (Hidden on mobile) -->
+<aside class="hidden lg:flex flex-col h-screen w-64 border-r border-stone-200 bg-stone-50 py-6 px-4 space-y-2 fixed left-0 font-lexend text-sm">
+<div class="mb-8 px-3">
+<p class="text-stone-500 font-medium">Hello,</p>
+<h2 class="text-lg font-bold text-green-800">Farmer Rajesh</h2>
+<p class="text-[10px] text-stone-400 uppercase tracking-widest mt-1">Modern Farming Partner</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-green-100 text-green-900 font-bold rounded-lg px-3 py-2 flex items-center gap-3 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                    Dashboard
+                </a>
+<a class="text-stone-600 hover:bg-stone-200 px-3 py-2 flex items-center gap-3 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">potted_plant</span>
+                    Crop Health
+                </a>
+<a class="text-stone-600 hover:bg-stone-200 px-3 py-2 flex items-center gap-3 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+                    Market Trends
+                </a>
+<a class="text-stone-600 hover:bg-stone-200 px-3 py-2 flex items-center gap-3 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+                    AI Assistant
+                </a>
+</nav>
+<div class="pt-6 border-t border-stone-200 space-y-1">
+<a class="text-stone-600 hover:bg-stone-200 px-3 py-2 flex items-center gap-3 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+<a class="text-stone-600 hover:bg-stone-200 px-3 py-2 flex items-center gap-3 rounded-lg transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+                    Support
+                </a>
+<div class="mt-4 p-4 bg-primary-container text-white rounded-xl">
+<p class="text-xs opacity-80 mb-2">Need help?</p>
+<button class="w-full bg-white text-primary-container font-bold py-2 rounded-lg text-xs">Help Center</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-64 p-4 md:p-8 max-w-7xl mx-auto w-full">
+<!-- Dashboard Header -->
+<div class="mb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Field Overview</h2>
+<p class="font-body-md text-on-surface-variant">Last updated: Today, 08:30 AM</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Weather Widget (Span 8) -->
+<section class="md:col-span-12 lg:col-span-8 bg-white rounded-xl p-6 border border-stone-100 shadow-sm overflow-hidden relative">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-green-900 flex items-center gap-2">
+<span class="material-symbols-outlined">cloud_sync</span>
+                                Weather Forecast
+                            </h3>
+<p class="text-stone-500 font-label-md">Punjab, North Region</p>
+</div>
+<div class="flex items-center gap-4 bg-stone-50 px-4 py-2 rounded-full border border-stone-100">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-500">humidity_low</span>
+<span class="font-bold">62%</span>
+</div>
+<div class="w-px h-4 bg-stone-300"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500">air</span>
+<span class="font-bold">12 km/h</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+<!-- Current Day Large -->
+<div class="md:col-span-2 flex items-center gap-4 bg-green-50/50 p-4 rounded-2xl border border-green-100/50">
+<span class="material-symbols-outlined text-6xl text-secondary-container" style="font-variation-settings: 'FILL' 1;">light_mode</span>
+<div>
+<span class="text-4xl font-bold text-stone-900">28°C</span>
+<p class="text-stone-600 font-medium">Mostly Sunny</p>
+</div>
+</div>
+<!-- 4 Day Forecast -->
+<div class="md:col-span-3 flex justify-between items-center gap-2 overflow-x-auto pb-2">
+<div class="flex flex-col items-center p-3 min-w-[70px]">
+<span class="text-xs font-bold text-stone-400 mb-2 uppercase">Tue</span>
+<span class="material-symbols-outlined text-stone-500 mb-2">partly_cloudy_day</span>
+<span class="text-sm font-bold">29°</span>
+</div>
+<div class="flex flex-col items-center p-3 min-w-[70px]">
+<span class="text-xs font-bold text-stone-400 mb-2 uppercase">Wed</span>
+<span class="material-symbols-outlined text-blue-400 mb-2">rainy</span>
+<span class="text-sm font-bold">24°</span>
+</div>
+<div class="flex flex-col items-center p-3 min-w-[70px] bg-stone-50 rounded-xl border border-stone-100">
+<span class="text-xs font-bold text-stone-400 mb-2 uppercase">Thu</span>
+<span class="material-symbols-outlined text-blue-600 mb-2" style="font-variation-settings: 'FILL' 1;">thunderstorm</span>
+<span class="text-sm font-bold">22°</span>
+</div>
+<div class="flex flex-col items-center p-3 min-w-[70px]">
+<span class="text-xs font-bold text-stone-400 mb-2 uppercase">Fri</span>
+<span class="material-symbols-outlined text-stone-500 mb-2">cloud</span>
+<span class="text-sm font-bold">26°</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Market Rates Widget (Span 4) -->
+<section class="md:col-span-12 lg:col-span-4 bg-white rounded-xl p-6 border border-stone-100 shadow-sm">
+<h3 class="font-headline-sm text-headline-sm text-green-900 mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">trending_up</span>
+                        Top Market Rates
+                    </h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center p-3 hover:bg-stone-50 rounded-xl transition-colors border border-transparent hover:border-stone-100">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-800 font-bold">W</div>
+<div>
+<p class="font-bold text-sm">Wheat</p>
+<p class="text-xs text-stone-500">Per Quintal</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-sm">₹2,125</p>
+<p class="text-xs text-green-600 flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                                    2.4%
+                                </p>
+</div>
+</div>
+<div class="flex justify-between items-center p-3 hover:bg-stone-50 rounded-xl transition-colors border border-transparent hover:border-stone-100">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-800 font-bold">R</div>
+<div>
+<p class="font-bold text-sm">Rice</p>
+<p class="text-xs text-stone-500">Per Quintal</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-sm">₹1,940</p>
+<p class="text-xs text-error flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                                    0.8%
+                                </p>
+</div>
+</div>
+<div class="flex justify-between items-center p-3 hover:bg-stone-50 rounded-xl transition-colors border border-transparent hover:border-stone-100">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-800 font-bold">C</div>
+<div>
+<p class="font-bold text-sm">Corn</p>
+<p class="text-xs text-stone-500">Per Quintal</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-sm">₹1,850</p>
+<p class="text-xs text-green-600 flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                                    1.2%
+                                </p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 text-stone-500 font-label-md hover:text-green-800 flex items-center justify-center gap-2 group">
+                        View All Markets
+                        <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</section>
+<!-- Crop Health Section (Full Width Grid) -->
+<section class="md:col-span-12">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-sm text-headline-sm text-green-900 flex items-center gap-2">
+<span class="material-symbols-outlined">potted_plant</span>
+                            Current Crop Health
+                        </h3>
+<button class="bg-primary-container text-white px-4 py-2 rounded-full font-label-md text-xs flex items-center gap-2 shadow-lg shadow-green-900/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span>
+                            Add Field
+                        </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Crop Card 1 -->
+<div class="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+<div class="h-32 bg-stone-200 relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="vibrant green wheat field under a clear blue sky with golden sunlight casting long shadows across the stalks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDNHgsvKjJnHE2PQ1WcJQuqnrqNiW3AzaXv0VtuAkzkecJXF_pK3rf39P7RCleq2tpXA3ARcSeegvFBL3Ywxr5nPfrn4WXQXsX3vsnjp9XLOLwW1_2tLVIWnzQFmsLDRkolj6Urq7yrvvoCKBkX331ViwxBVVI5I1xcuj4t8_0Niqu3HEFhUmTdMtnE1YvLOWrYVlVuFK_18qdFGThP1DECqgAma0ZEZLtH9FCmyjd6weW1P1z-ZjJp1HVyozTPjA5wYJo6HznOHFV"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-green-800 uppercase tracking-wider">Field A-1</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-lg">Winter Wheat</h4>
+<p class="text-xs text-stone-500">Sown: Oct 12, 2023</p>
+</div>
+<div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-[10px] font-extrabold flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-green-600 rounded-full"></span>
+                                        OPTIMAL
+                                    </div>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="text-stone-500">Growth Stage</span>
+<span class="font-bold">Tillering</span>
+</div>
+<div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[65%] rounded-full"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-stone-50 p-2 rounded-lg text-center">
+<p class="text-[10px] text-stone-400 uppercase font-bold">Soil pH</p>
+<p class="text-sm font-bold text-stone-700">6.8</p>
+</div>
+<div class="bg-stone-50 p-2 rounded-lg text-center">
+<p class="text-[10px] text-stone-400 uppercase font-bold">Moisture</p>
+<p class="text-sm font-bold text-stone-700">42%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Crop Card 2 -->
+<div class="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+<div class="h-32 bg-stone-200 relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="close-up of healthy young maize corn plants in a row with rich dark soil and morning dew" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmPr5e3RvSJqNeK2hHoKx7gLXfJYmukYLpjsR2n_JAzWhZJAPxN1YZQlICOnZUqHgL_Rhws5v1r9L03cVetLiyEhcCjobgXZTy66fbpEOMBO6exXZGYBID1WihGWzvjFYR3nf4r6Dn1Dwmf4ebHzRWIisqQc1ZKY9PmqMwl01wNnoCkdUK1aqpTAGsgdIxPp5Nc3l5Ld-qAv5HWN9IrRwwlycdwHrwX4g0EbMZcMgjNGhuylFCM9cctwkNzyvK1rGWprB8J2HjbOg4"/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-green-800 uppercase tracking-wider">Field B-4</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-lg">Yellow Maize</h4>
+<p class="text-xs text-stone-500">Sown: Nov 05, 2023</p>
+</div>
+<div class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-[10px] font-extrabold flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-amber-600 rounded-full"></span>
+                                        ATTENTION
+                                    </div>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="text-stone-500">Growth Stage</span>
+<span class="font-bold">Vegetative</span>
+</div>
+<div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[30%] rounded-full"></div>
+</div>
+</div>
+<div class="bg-error-container/30 border border-error-container p-3 rounded-lg flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-lg">warning</span>
+<p class="text-[11px] text-on-error-container font-medium">Low nitrogen levels detected. Fertilization recommended.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Crop Card 3 -->
+<div class="bg-white rounded-2xl border border-stone-100 shadow-sm border-dashed flex flex-col items-center justify-center min-h-[300px] text-stone-400 hover:text-green-800 hover:bg-green-50/50 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl mb-2">add_circle</span>
+<p class="font-bold">Add New Crop Field</p>
+<p class="text-xs">Monitor health and soil analytics</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-white/95 backdrop-blur-lg lg:hidden rounded-t-2xl border-t border-stone-100 shadow-[0_-4px_12px_rgba(45,90,39,0.08)] font-lexend text-[11px] font-medium">
+<a class="flex flex-col items-center justify-center bg-green-50 text-green-800 rounded-xl px-4 py-1.5 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+            Home
+        </a>
+<a class="flex flex-col items-center justify-center text-stone-400 px-4 py-1.5 active:bg-stone-100 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">agriculture</span>
+            Crops
+        </a>
+<a class="flex flex-col items-center justify-center text-stone-400 px-4 py-1.5 active:bg-stone-100 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">insights</span>
+            Market
+        </a>
+<a class="flex flex-col items-center justify-center text-stone-400 px-4 py-1.5 active:bg-stone-100 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">mic</span>
+            AI Chat
+        </a>
+</nav>
+<!-- Floating Action Button: Ask AI -->
+<button class="fixed bottom-24 right-6 lg:bottom-10 lg:right-10 w-16 h-16 bg-primary-container text-white rounded-full flex items-center justify-center shadow-2xl shadow-green-900/40 z-50 hover:scale-110 active:scale-90 transition-all group overflow-hidden">
+<div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<!-- Tooltip Label -->
+<span class="absolute right-full mr-4 bg-stone-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            Ask AI Assistant
+        </span>
+</button>
+</body></html>

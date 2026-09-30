@@ -1,0 +1,579 @@
+/* Krishi Sahayak - Global Styles */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block; line-height: 1; text-transform: none;
+  letter-spacing: normal; word-wrap: normal; white-space: nowrap; direction: ltr;
+}
+
+/* Page visibility */
+.page-content { display: none; animation: fadeIn 0.3s ease; }
+.page-content.active { display: block; }
+
+/* Top nav links */
+.nav-top-link {
+  cursor: pointer; font-weight: 500; padding: 4px 12px; border-radius: 8px;
+  color: #78716c; transition: all 0.2s;
+}
+.nav-top-link:hover { background: #f5f5f4; }
+.nav-top-link.active {
+  color: #166534; font-weight: 600; border-bottom: 2px solid #166534;
+  border-radius: 0;
+}
+
+/* Side nav links */
+.side-nav-link {
+  display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+  border-radius: 8px; color: #57534e; cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.side-nav-link:hover { background: #e7e5e4; }
+.side-nav-link.active {
+  background: #dcfce7; color: #14532d; font-weight: 700;
+}
+
+/* Bottom nav links */
+.bottom-nav-link {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 6px 16px; border-radius: 12px;
+  color: #a8a29e; cursor: pointer; transition: transform 0.15s;
+}
+.bottom-nav-link:active { transform: scale(0.9); }
+.bottom-nav-link.active {
+  background: #f0fdf4; color: #166534;
+}
+
+/* Chat styles */
+.chat-bubble-ai {
+  background: #f5f5f4; padding: 16px; border-radius: 16px;
+  border-top-left-radius: 0; border: 1px solid #f5f5f4;
+}
+.chat-bubble-user {
+  background: #154212; color: white; padding: 16px;
+  border-radius: 16px; border-top-right-radius: 0;
+}
+
+/* Chart gradient */
+.chart-gradient {
+  background: linear-gradient(180deg, rgba(45,90,39,0.1) 0%, rgba(45,90,39,0) 100%);
+}
+
+/* Animate pulse for typing indicator */
+@keyframes pulse-dot { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
+.typing-dot { animation: pulse-dot 1.4s infinite ease-in-out; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Smooth page transitions */
+.page-content { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c2c9bb; border-radius: 3px; }
+
+/* ==========================================
+   🌓 GLOBAL DARK MODE OVERRIDES
+   ========================================== */
+
+/* Main page body and containers */
+html.dark,
+html.dark body {
+  background-color: #121413 !important;
+  color: #e1e3e2 !important;
+}
+
+/* Dark scrollbar */
+html.dark ::-webkit-scrollbar-thumb {
+  background: #333836 !important;
+}
+
+/* Sidebar & Navigation Drawers */
+html.dark #sidenav,
+html.dark #topnav {
+  background-color: #191c1c !important;
+  border-color: #2a2e2d !important;
+  color: #e1e3e2 !important;
+}
+
+/* Side navigation links */
+html.dark .side-nav-link {
+  color: #c2c9bb !important;
+}
+
+html.dark .side-nav-link:hover {
+  background-color: #232726 !important;
+  color: #a1d494 !important;
+}
+
+html.dark .side-nav-link.active {
+  background-color: #1d331b !important;
+  color: #a1d494 !important;
+}
+
+/* All Cards, Sections & Dropdowns */
+html.dark .bg-white {
+  background-color: #1e2221 !important;
+  border-color: #2a2e2d !important;
+  color: #e1e3e2 !important;
+}
+
+/* Muted backgrounds and scrollable chat areas */
+html.dark .bg-stone-50,
+html.dark .bg-stone-100,
+html.dark .bg-stone-50\/30,
+html.dark .bg-stone-50\/50,
+html.dark .bg-stone-50\/70 {
+  background-color: #141716 !important;
+  border-color: #262a29 !important;
+  color: #e1e3e2 !important;
+}
+
+/* Metric / Weather boxes in Dark Mode */
+html.dark .bg-green-50,
+html.dark .bg-green-50\/50,
+html.dark .bg-emerald-50 {
+  background-color: #172a18 !important;
+  border-color: #254426 !important;
+}
+
+html.dark .bg-blue-50 {
+  background-color: #142233 !important;
+  border-color: #1d3450 !important;
+}
+
+html.dark .bg-orange-50 {
+  background-color: #332014 !important;
+  border-color: #4d301f !important;
+}
+
+html.dark .bg-amber-50 {
+  background-color: #2e2311 !important;
+  border-color: #4d3a1d !important;
+}
+
+/* AI & User Chat Bubbles */
+html.dark .chat-bubble-ai {
+  background-color: #1e2221 !important;
+  border-color: #2a2e2d !important;
+  color: #f1f3f2 !important;
+}
+
+html.dark .chat-bubble-user {
+  background-color: #1d3b19 !important;
+  border-color: #2d5a27 !important;
+  color: #ffffff !important;
+}
+
+/* Interactive Suggestion Cards & Follow-Up Buttons */
+html.dark #suggestion-cards button,
+html.dark .suggestion-pill,
+html.dark [onclick*="handleQuestionClick"],
+html.dark [onclick*="sendSuggestion"] {
+  background-color: #1e2221 !important;
+  border-color: #2e3532 !important;
+  color: #d1fae5 !important;
+}
+
+html.dark #suggestion-cards button:hover,
+html.dark .suggestion-pill:hover,
+html.dark [onclick*="handleQuestionClick"]:hover,
+html.dark [onclick*="sendSuggestion"]:hover {
+  background-color: #1a381c !important;
+  border-color: #2d5a27 !important;
+  color: #a1d494 !important;
+}
+
+/* Secondary meta labels on suggestion buttons */
+html.dark #suggestion-cards span,
+html.dark [onclick*="handleQuestionClick"] span,
+html.dark [onclick*="sendSuggestion"] span {
+  color: #9ea49b !important;
+}
+
+html.dark #suggestion-cards button:hover span,
+html.dark [onclick*="handleQuestionClick"]:hover span,
+html.dark [onclick*="sendSuggestion"]:hover span {
+  color: #a1d494 !important;
+}
+
+/* Specialist Banner Card */
+html.dark .bg-\[\#2d5a27\] {
+  background-color: #183317 !important;
+  border-color: #284c26 !important;
+}
+
+/* Text adjustments for readability */
+html.dark .text-stone-900,
+html.dark .text-stone-800,
+html.dark .text-stone-700,
+html.dark .text-green-900,
+html.dark .text-green-950,
+html.dark .text-\[\#191c1c\] {
+  color: #f1f3f2 !important;
+}
+
+html.dark .text-stone-600,
+html.dark .text-stone-500,
+html.dark .text-stone-400,
+html.dark .text-\[\#42493e\] {
+  color: #9ea49b !important;
+}
+
+html.dark .text-blue-900,
+html.dark .text-blue-700,
+html.dark .text-blue-600 {
+  color: #90caf9 !important;
+}
+
+html.dark .text-orange-900,
+html.dark .text-orange-700,
+html.dark .text-amber-600 {
+  color: #ffcc80 !important;
+}
+
+html.dark .text-green-600,
+html.dark .text-emerald-900 {
+  color: #a1d494 !important;
+}
+
+/* Borders and Dividers */
+html.dark .border-stone-50,
+html.dark .border-stone-100,
+html.dark .border-stone-200,
+html.dark .border-stone-200\/60,
+html.dark .border-stone-200\/80,
+html.dark .border-green-100,
+html.dark .border-green-200,
+html.dark .border-emerald-300\/80 {
+  border-color: #2a2e2d !important;
+}
+
+/* Weather 'See More' button */
+html.dark #weather-see-more-btn {
+  background-color: #1d331b !important;
+  border-color: #2d5a27 !important;
+  color: #a1d494 !important;
+}
+
+html.dark #weather-see-more-btn:hover {
+  background-color: #254426 !important;
+}
+
+/* Inputs & Search boxes */
+html.dark input {
+  background-color: #191c1c !important;
+  color: #ffffff !important;
+  border-color: #2a2e2d !important;
+}
+
+html.dark input::placeholder {
+  color: #6d7571 !important;
+}
+
+/* Voice and icon utility buttons */
+html.dark #voice-btn {
+  background-color: #1e2221 !important;
+  border-color: #2a2e2d !important;
+  color: #9ea49b !important;
+}
+
+html.dark #voice-btn:hover {
+  background-color: #2a2e2d !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================
+   🌾 MARKET TRENDS & CARD CONTRAST IN DARK MODE
+   ========================================== */
+
+/* Fix card background and border definition */
+html.dark .rounded-2xl,
+html.dark .rounded-3xl,
+html.dark [class*="rounded-"][class*="border"] {
+  background-color: #1a1e1c !important;
+  border-color: #2a312d !important;
+}
+
+/* Fix Market News specific card */
+html.dark .bg-stone-50\/80,
+html.dark .bg-stone-100\/80,
+html.dark .bg-stone-50\/60,
+html.dark .bg-stone-100\/60 {
+  background-color: #1a1e1c !important;
+  border-color: #2a312d !important;
+}
+
+/* Card Titles & Section Headers */
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark .font-\[Lexend\] {
+  color: #f1f5f2 !important;
+}
+
+/* Green headers like "Market News" */
+html.dark .text-green-800,
+html.dark .text-emerald-800,
+html.dark .text-emerald-900 {
+  color: #86efac !important;
+}
+
+/* Category tags like POLICY UPDATE, ARRIVAL TRENDS */
+html.dark .text-amber-600,
+html.dark .text-orange-600,
+html.dark .text-amber-700,
+html.dark .text-orange-700 {
+  color: #fbbf24 !important;
+  font-weight: 600 !important;
+}
+
+html.dark .text-emerald-600,
+html.dark .text-green-700 {
+  color: #4ade80 !important;
+  font-weight: 600 !important;
+}
+
+/* Subtitle and descriptive text under news headings */
+html.dark p,
+html.dark .text-stone-400,
+html.dark .text-stone-500,
+html.dark .text-stone-600 {
+  color: #cbd5e1 !important;
+}
+
+/* Dropdown select boxes (Uttar Pradesh, Wheat) */
+html.dark select,
+html.dark .select-custom,
+html.dark [role="combobox"],
+html.dark button[id*="dropdown"],
+html.dark button.rounded-xl {
+  background-color: #1e2421 !important;
+  color: #f8fafc !important;
+  border-color: #333d37 !important;
+}
+
+html.dark select option {
+  background-color: #1a1e1c !important;
+  color: #f8fafc !important;
+}
+
+/* Internal horizontal line separator */
+html.dark hr,
+html.dark .border-t {
+  border-color: #2a312d !important;
+}
+
+/* ==========================================
+   📊 MANDI RATES TABLE DARK MODE & HOVER FIX
+   ========================================== */
+
+/* Fix the dark green "Live Mandi Rates" header contrast */
+html.dark .mandi-title {
+  color: #4ade80 !important;
+}
+
+/* Base table row styles in dark mode */
+html.dark table tbody tr {
+  background-color: transparent !important;
+  color: #e2e8f0 !important;
+  border-color: #272f2a !important;
+  transition: background-color 0.15s ease !important;
+}
+
+/* Subtle forest-charcoal hover instead of stark white */
+html.dark table tbody tr:hover,
+html.dark table tbody tr:hover td,
+html.dark .hover\:bg-stone-50:hover,
+html.dark .hover\:bg-white:hover {
+  background-color: #222d25 !important;
+  color: #ffffff !important;
+}
+
+/* Table column header row */
+html.dark table thead th {
+  color: #94a3b8 !important;
+  border-color: #272f2a !important;
+}
+
+/* Rates and commodity cells */
+html.dark table tbody tr td {
+  color: #cbd5e1 !important;
+  border-color: #272f2a !important;
+}
+
+/* Keep modal rate (e.g. ₹2,315) vibrant */
+html.dark table tbody tr td:has(strong),
+html.dark table tbody tr td strong,
+html.dark table tbody tr td .font-bold {
+  color: #86efac !important;
+}
+
+/* Mandi location icon */
+html.dark table tbody tr td .material-symbols-outlined {
+  color: #4ade80 !important;
+}
+
+/* ==========================================
+   🌐 LANGUAGE DROPDOWN - BASE & DARK MODE
+   ========================================== */
+
+#languageMenu .language-option {
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #333333;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#languageMenu .language-option:hover {
+  background-color: #f5f5f4;
+  color: #166534;
+}
+
+html.dark #languageMenu {
+  background-color: #1e2221 !important;
+  border-color: #2a2e2d !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+html.dark #languageMenu .language-option {
+  background-color: transparent !important;
+  color: #f1f3f2 !important;
+  border: none !important;
+}
+
+html.dark #languageMenu .language-option:hover {
+  background-color: #2a2e2d !important;
+  color: #a1d494 !important;
+}
+
+/* ==========================================
+   🚫 TOP NAV DARK MODE & HOVER FIX
+   ========================================== */
+
+html.dark #topnav a,
+html.dark #topnav button,
+html.dark .nav-top-link,
+html.dark [class*="nav-link"] {
+  background-color: transparent !important;
+  color: #94a3b8 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+html.dark #topnav a:hover,
+html.dark #topnav button:hover,
+html.dark .nav-top-link:hover,
+html.dark [class*="nav-link"]:hover,
+html.dark .hover\:bg-white:hover,
+html.dark .hover\:bg-stone-50:hover,
+html.dark .hover\:bg-stone-100:hover {
+  background-color: #232a25 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark #topnav a.active,
+html.dark #topnav button.active,
+html.dark .nav-top-link.active,
+html.dark [class*="nav-link"].active {
+  background-color: transparent !important;
+  color: #4ade80 !important;
+  border-bottom: 2px solid #4ade80 !important;
+}
+
+/* ==========================================================================
+   ⚠️ ADVISORY BANNERS, WEATHER ALERTS & WARNING CALLOUTS (STANDARD CSS)
+   ========================================================================== */
+
+/* Universal Dark Callout Container: Covers border-l-4, border-l-2, amber/yellow backgrounds */
+html.dark [class*="border-l-4"],
+html.dark [class*="border-l-2"],
+html.dark .border-l-4,
+html.dark .bg-amber-50,
+html.dark .bg-yellow-50,
+html.dark .bg-amber-100,
+html.dark .bg-yellow-100,
+html.dark .bg-amber-500\/10,
+html.dark .bg-yellow-500\/10,
+html.dark [class*="bg-amber-500\/"],
+html.dark [class*="bg-yellow-500\/"] {
+  background-color: #1e261f !important; /* Elevated forest-slate surface */
+  border-top: 1px solid #2a382b !important;
+  border-right: 1px solid #2a382b !important;
+  border-bottom: 1px solid #2a382b !important;
+  border-left: 5px solid #eab308 !important; /* Prominent amber-gold bar */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Blue/Cyan accent for Weather Advisories specifically */
+html.dark .border-blue-500,
+html.dark .border-sky-500,
+html.dark .border-cyan-500,
+html.dark [class*="border-sky-"],
+html.dark [class*="border-blue-"] {
+  border-left-color: #38bdf8 !important;
+}
+
+/* Red/Rose accent for Critical Alerts / Fungal / Hazard warnings */
+html.dark .bg-red-50,
+html.dark .bg-rose-50,
+html.dark .border-red-500,
+html.dark .border-rose-500,
+html.dark [class*="border-red-"] {
+  background-color: #271616 !important;
+  border-top: 1px solid #4a2121 !important;
+  border-right: 1px solid #4a2121 !important;
+  border-bottom: 1px solid #4a2121 !important;
+  border-left: 5px solid #ef4444 !important;
+  color: #fca5a5 !important;
+}
+
+/* Ensure Advisory & Warning Headlines stay bright and legible */
+html.dark [class*="border-l-"] h3,
+html.dark [class*="border-l-"] h4,
+html.dark [class*="border-l-"] .font-semibold,
+html.dark [class*="border-l-"] .font-bold,
+html.dark .bg-amber-50 h4,
+html.dark .bg-yellow-50 h4 {
+  color: #f8fafc !important;
+}
+
+/* Advisory & Warning text content */
+html.dark [class*="border-l-"] p,
+html.dark [class*="border-l-"] span,
+html.dark .bg-amber-50 p,
+html.dark .bg-yellow-50 p {
+  color: #e2e8f0 !important;
+}
+
+/* Warning & Alert Icons */
+html.dark .material-symbols-outlined.text-yellow-500,
+html.dark .material-symbols-outlined.text-amber-500,
+html.dark .material-symbols-outlined.text-orange-500 {
+  color: #fbbf24 !important;
+}
+
+/* ==========================================================================
+   🌿 CROP HEALTH & CALCULATOR EQUIPMENT CARDS (PPE) IN DARK MODE
+   ========================================================================== */
+
+/* Equipment cards (Face Mask, Gloves, Goggles, Boots) */
+html.dark .grid > div[class*="rounded"]:has(.material-symbols-outlined),
+html.dark div:has(> .material-symbols-outlined:is(.text-orange-500, .text-amber-500)) {
+  background-color: #1a1e1c !important;
+  border-color: #2a332d !important;
+}
+
+/* Crop Health Main Viewport & Dashed Upload Zone */
+html.dark #page-crop-health [class*="border-dashed"],
+html.dark .crop-health-page [class*="border-dashed"] {
+  background-color: #171b18 !important;
+  border-color: #2f3832 !important;
+}

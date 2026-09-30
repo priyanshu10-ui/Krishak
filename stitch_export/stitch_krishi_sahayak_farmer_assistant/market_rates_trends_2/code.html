@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Krishi Sahayak - Market Trends</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c2c9bb",
+                        "on-tertiary-container": "#accba5",
+                        "surface-dim": "#d9dad9",
+                        "secondary": "#895100",
+                        "on-tertiary-fixed": "#062108",
+                        "on-secondary-container": "#6c3f00",
+                        "primary-fixed": "#bcf0ae",
+                        "background": "#f8faf9",
+                        "tertiary": "#253f23",
+                        "primary-fixed-dim": "#a1d494",
+                        "surface-container": "#edeeed",
+                        "on-secondary-fixed": "#2c1700",
+                        "on-background": "#191c1c",
+                        "tertiary-fixed": "#cbebc3",
+                        "inverse-surface": "#2e3131",
+                        "outline": "#72796e",
+                        "secondary-fixed-dim": "#ffb86c",
+                        "tertiary-container": "#3b5739",
+                        "error": "#ba1a1a",
+                        "surface": "#f8faf9",
+                        "on-primary-fixed": "#002201",
+                        "inverse-on-surface": "#f0f1f0",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#afcfa9",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#9dd090",
+                        "on-surface": "#191c1c",
+                        "on-tertiary-fixed-variant": "#324d30",
+                        "secondary-fixed": "#ffdcbc",
+                        "surface-bright": "#f8faf9",
+                        "inverse-primary": "#a1d494",
+                        "primary": "#154212",
+                        "surface-tint": "#3b6934",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e3e2",
+                        "surface-container-highest": "#e1e3e2",
+                        "primary-container": "#2d5a27",
+                        "surface-container-high": "#e7e8e7",
+                        "on-primary-fixed-variant": "#23501e",
+                        "secondary-container": "#ffa536",
+                        "surface-container-low": "#f3f4f3",
+                        "on-surface-variant": "#42493e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#683c00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "1.25rem",
+                        "unit-1": "0.25rem",
+                        "unit-2": "0.5rem",
+                        "unit-8": "2rem",
+                        "base": "4px",
+                        "unit-6": "1.5rem",
+                        "gutter": "1rem",
+                        "unit-4": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Lexend"],
+                        "headline-md": ["Lexend"],
+                        "body-lg": ["Public Sans"],
+                        "caption": ["Public Sans"],
+                        "label-md": ["Public Sans"],
+                        "display-lg": ["Lexend"],
+                        "body-md": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-gradient {
+            background: linear-gradient(180deg, rgba(45, 90, 39, 0.1) 0%, rgba(45, 90, 39, 0) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/80 backdrop-blur-md border-b border-stone-100 shadow-sm shadow-green-900/5 font-lexend antialiased">
+<div class="flex items-center gap-4">
+<span class="text-xl font-extrabold tracking-tight text-green-800">Krishi Sahayak</span>
+</div>
+<div class="hidden md:flex items-center space-x-8">
+<nav class="flex space-x-6">
+<a class="text-stone-500 font-medium hover:bg-stone-50 transition-colors px-2 py-1" href="#">Dashboard</a>
+<a class="text-stone-500 font-medium hover:bg-stone-50 transition-colors px-2 py-1" href="#">Crop Health</a>
+<a class="text-green-800 font-semibold border-b-2 border-green-800 px-2 py-1" href="#">Market Trends</a>
+<a class="text-stone-500 font-medium hover:bg-stone-50 transition-colors px-2 py-1" href="#">AI Assistant</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-stone-500 hover:bg-stone-50 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-stone-500 hover:bg-stone-50 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col h-[calc(100vh-64px)] w-64 fixed left-0 bg-stone-50 border-r border-stone-200 py-6 px-4 space-y-2 font-lexend text-sm">
+<div class="px-3 mb-6">
+<p class="text-lg font-bold text-green-800">Krishi Sahayak</p>
+<p class="text-xs text-stone-500">Modern Farming Partner</p>
+</div>
+<a class="text-stone-600 px-3 py-2 hover:bg-stone-200 transition-all rounded-lg flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> Dashboard
+            </a>
+<a class="text-stone-600 px-3 py-2 hover:bg-stone-200 transition-all rounded-lg flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="potted_plant">potted_plant</span> Crop Health
+            </a>
+<a class="bg-green-100 text-green-900 font-bold rounded-lg px-3 py-2 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span> Market Trends
+            </a>
+<a class="text-stone-600 px-3 py-2 hover:bg-stone-200 transition-all rounded-lg flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span> AI Assistant
+            </a>
+<div class="mt-auto pt-6 border-t border-stone-200 space-y-1">
+<a class="text-stone-600 px-3 py-2 hover:bg-stone-200 transition-all rounded-lg flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span> Settings
+                </a>
+<a class="text-stone-600 px-3 py-2 hover:bg-stone-200 transition-all rounded-lg flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span> Support
+                </a>
+<button class="w-full mt-4 bg-primary-container text-on-primary-container font-semibold py-2.5 rounded-xl active:scale-95 transition-transform">
+                    Help Center
+                </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-64 p-4 md:p-8 bg-background">
+<div class="max-w-7xl mx-auto space-y-8">
+<!-- Header & Filters -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-headline-md text-display-lg text-primary">Market Rates &amp; Trends</h1>
+<p class="font-body-md text-on-surface-variant">Real-time agricultural commodity prices across 450+ regional Mandis.</p>
+</div>
+<div class="flex gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2.5 rounded-xl border-outline-variant bg-surface-container-lowest focus:ring-primary focus:border-primary w-full md:w-64 font-body-md" placeholder="Search crops or markets..." type="text"/>
+</div>
+<button class="flex items-center gap-2 px-4 py-2.5 bg-white border border-outline-variant rounded-xl text-on-surface font-label-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="filter_list">filter_list</span>
+                            Filters
+                        </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Market Pulse Chart (Bento Large) -->
+<div class="lg:col-span-8 bg-surface-container-lowest border border-stone-100 rounded-3xl p-6 shadow-sm shadow-green-900/5">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="font-headline-sm text-primary">Price Volatility Index</h3>
+<p class="font-caption text-outline">Last 30 days - Wheat (Malwa Gold)</p>
+</div>
+<div class="flex gap-2 bg-surface-container rounded-lg p-1">
+<button class="px-3 py-1 text-xs font-bold rounded-md bg-white shadow-sm">1M</button>
+<button class="px-3 py-1 text-xs font-medium text-outline">3M</button>
+<button class="px-3 py-1 text-xs font-medium text-outline">1Y</button>
+</div>
+</div>
+<!-- Simulated Chart -->
+<div class="relative h-64 w-full chart-gradient rounded-xl border-b-2 border-l-2 border-stone-100 flex items-end px-4 gap-2">
+<div class="flex-1 bg-primary-container/20 h-[40%] rounded-t-sm relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">₹2,100</div>
+</div>
+<div class="flex-1 bg-primary-container/30 h-[55%] rounded-t-sm relative group"></div>
+<div class="flex-1 bg-primary-container/40 h-[45%] rounded-t-sm relative group"></div>
+<div class="flex-1 bg-primary-container/20 h-[60%] rounded-t-sm relative group"></div>
+<div class="flex-1 bg-secondary-container h-[75%] rounded-t-sm relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] px-1.5 py-0.5 rounded opacity-100">Peak: ₹2,450</div>
+</div>
+<div class="flex-1 bg-primary-container/50 h-[65%] rounded-t-sm relative group"></div>
+<div class="flex-1 bg-primary-container/40 h-[50%] rounded-t-sm relative group"></div>
+<div class="flex-1 bg-primary-container/30 h-[40%] rounded-t-sm relative group"></div>
+<div class="flex-1 bg-primary-container/20 h-[48%] rounded-t-sm relative group"></div>
+<div class="flex-1 bg-primary-container/40 h-[62%] rounded-t-sm relative group"></div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] text-outline font-label-md">
+<span>01 OCT</span>
+<span>10 OCT</span>
+<span>20 OCT</span>
+<span>30 OCT</span>
+</div>
+</div>
+<!-- Market News Sidebar (Bento Side) -->
+<div class="lg:col-span-4 space-y-6">
+<div class="bg-surface-container-highest/30 backdrop-blur-sm border border-white/50 rounded-3xl p-6">
+<h3 class="font-headline-sm text-tertiary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="newspaper">newspaper</span>
+                                Market News
+                            </h3>
+<div class="space-y-4">
+<article class="group cursor-pointer">
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Policy Update</span>
+<h4 class="font-label-md text-on-surface group-hover:text-primary transition-colors mt-1">New MSP buffer stocks announced for Rabi Season.</h4>
+<p class="text-caption text-outline mt-1 line-clamp-2">The central government has approved a 15% increase in procurement targets...</p>
+</article>
+<hr class="border-stone-200"/>
+<article class="group cursor-pointer">
+<span class="text-[10px] font-bold text-green-700 uppercase tracking-widest">Global Shifts</span>
+<h4 class="font-label-md text-on-surface group-hover:text-primary transition-colors mt-1">Soybean exports reach 3-year high amid supply gaps.</h4>
+<p class="text-caption text-outline mt-1">International demand from Southeast Asian markets continues to surge...</p>
+</article>
+<button class="w-full py-2 text-primary font-bold text-caption border-2 border-primary/10 rounded-xl hover:bg-primary/5 transition-colors">View All Insights</button>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-3xl h-48 group">
+<img alt="Market Logistics" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Modern high-tech grain silo and distribution center with golden wheat fields in the background during sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFLIj7V3ozGw-NxJTED8nTp91sjGhpIiy8H7p-42LWCdjRFLpwiS2CxKDdRn5VkIpGekOkkX_ReFhp6RuL3PzjwemoQr--50_82G1uCQFtJC2m_LnktTOouBc2nN_W9yPiBOrjqDaA0ZZ3oJiihT6GhGtDa_2vuF369gcuuzapcvoFpTH78i17u0Eu0sTgmtuUjcrOg_xFU_TTV0htq5G9AzHg8lttbtuSWoCAXkzrl2S3VSnbqri6KdPP1VKNWxYgn_psaUfQOVjH"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent p-6 flex flex-col justify-end">
+<h4 class="text-white font-headline-sm">Storage &amp; Logistics</h4>
+<p class="text-white/80 text-caption">Check available warehouse capacity near you.</p>
+</div>
+</div>
+</div>
+<!-- Mandi Table (Full Width Content) -->
+<div class="lg:col-span-12 bg-white border border-stone-100 rounded-3xl overflow-hidden shadow-sm shadow-green-900/5">
+<div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+<h3 class="font-headline-sm text-primary">Live Mandi Prices</h3>
+<div class="flex gap-4">
+<div class="flex items-center gap-2 text-caption text-outline">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                    Live Updates
+                                </div>
+<button class="text-primary font-label-md">Export CSV</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md border-collapse">
+<thead>
+<tr class="bg-stone-50 text-outline text-caption uppercase tracking-wider">
+<th class="px-6 py-4 font-bold">Commodity</th>
+<th class="px-6 py-4 font-bold">Mandi Location</th>
+<th class="px-6 py-4 font-bold">Min Price</th>
+<th class="px-6 py-4 font-bold">Max Price</th>
+<th class="px-6 py-4 font-bold">Modal Price</th>
+<th class="px-6 py-4 font-bold">Trend</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-stone-100">
+<tr class="hover:bg-stone-50 transition-colors">
+<td class="px-6 py-4 font-semibold text-on-surface">Wheat (Dara)</td>
+<td class="px-6 py-4 text-outline-variant text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="location_on">location_on</span> Indore, MP
+                                        </td>
+<td class="px-6 py-4">₹2,150</td>
+<td class="px-6 py-4">₹2,480</td>
+<td class="px-6 py-4 font-bold text-primary">₹2,315</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1 text-green-600 font-bold text-caption">
+<span class="material-symbols-outlined text-[18px]" data-icon="trending_up">trending_up</span> +2.4%
+                                            </span>
+</td>
+</tr>
+<tr class="hover:bg-stone-50 transition-colors">
+<td class="px-6 py-4 font-semibold text-on-surface">Cotton (Long)</td>
+<td class="px-6 py-4 text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="location_on">location_on</span> Rajkot, GJ
+                                        </td>
+<td class="px-6 py-4">₹6,800</td>
+<td class="px-6 py-4">₹7,450</td>
+<td class="px-6 py-4 font-bold text-primary">₹7,125</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1 text-red-500 font-bold text-caption">
+<span class="material-symbols-outlined text-[18px]" data-icon="trending_down">trending_down</span> -0.8%
+                                            </span>
+</td>
+</tr>
+<tr class="hover:bg-stone-50 transition-colors">
+<td class="px-6 py-4 font-semibold text-on-surface">Soybean (Yellow)</td>
+<td class="px-6 py-4 text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="location_on">location_on</span> Kota, RJ
+                                        </td>
+<td class="px-6 py-4">₹4,200</td>
+<td class="px-6 py-4">₹4,600</td>
+<td class="px-6 py-4 font-bold text-primary">₹4,450</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1 text-stone-400 font-bold text-caption">
+<span class="material-symbols-outlined text-[18px]" data-icon="trending_flat">trending_flat</span> 0.0%
+                                            </span>
+</td>
+</tr>
+<tr class="hover:bg-stone-50 transition-colors">
+<td class="px-6 py-4 font-semibold text-on-surface">Basmati Rice</td>
+<td class="px-6 py-4 text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="location_on">location_on</span> Karnal, HR
+                                        </td>
+<td class="px-6 py-4">₹3,900</td>
+<td class="px-6 py-4">₹4,850</td>
+<td class="px-6 py-4 font-bold text-primary">₹4,420</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1 text-green-600 font-bold text-caption">
+<span class="material-symbols-outlined text-[18px]" data-icon="trending_up">trending_up</span> +5.1%
+                                            </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-stone-50 border-t border-stone-100 flex items-center justify-center gap-2">
+<button class="p-1 rounded hover:bg-stone-200"><span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span></button>
+<span class="text-caption font-bold px-3 py-1 bg-primary text-white rounded">1</span>
+<span class="text-caption px-3 py-1 text-outline">2</span>
+<span class="text-caption px-3 py-1 text-outline">3</span>
+<button class="p-1 rounded hover:bg-stone-200"><span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-white/95 backdrop-blur-lg lg:hidden rounded-t-2xl border-t border-stone-100 shadow-[0_-4px_12px_rgba(45,90,39,0.08)] font-lexend text-[11px] font-medium">
+<a class="flex flex-col items-center justify-center text-stone-400 px-4 py-1.5 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+            Home
+        </a>
+<a class="flex flex-col items-center justify-center text-stone-400 px-4 py-1.5 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="agriculture">agriculture</span>
+            Crops
+        </a>
+<a class="flex flex-col items-center justify-center bg-green-50 text-green-800 rounded-xl px-4 py-1.5 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="insights" style="font-variation-settings: 'FILL' 1;">insights</span>
+            Market
+        </a>
+<a class="flex flex-col items-center justify-center text-stone-400 px-4 py-1.5 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="mic">mic</span>
+            AI Chat
+        </a>
+</nav>
+</body></html>

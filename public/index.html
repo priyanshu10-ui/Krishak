@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krishi Sahayak - Farmer's Digital Assistant</title>
+  <meta name="description"
+    content="Krishi Sahayak - Your modern farming partner. Get weather forecasts, crop health diagnosis, market rates, and AI-powered farming advice." />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Public+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "error-container": "#ffdad6", "on-secondary": "#ffffff", "outline-variant": "#c2c9bb",
+            "on-tertiary-container": "#accba5", "surface-dim": "#d9dad9", "secondary": "#895100",
+            "on-secondary-container": "#6c3f00", "primary-fixed": "#bcf0ae", "background": "#f8faf9",
+            "tertiary": "#253f23", "primary-fixed-dim": "#a1d494", "surface-container": "#edeeed",
+            "on-background": "#191c1c", "tertiary-fixed": "#cbebc3", "inverse-surface": "#2e3131",
+            "outline": "#72796e", "secondary-fixed-dim": "#ffb86c", "tertiary-container": "#3b5739",
+            "error": "#ba1a1a", "surface": "#f8faf9", "inverse-on-surface": "#f0f1f0",
+            "on-error": "#ffffff", "on-error-container": "#93000a", "on-primary-container": "#9dd090",
+            "on-surface": "#191c1c", "secondary-fixed": "#ffdcbc", "surface-bright": "#f8faf9",
+            "inverse-primary": "#a1d494", "primary": "#154212", "surface-tint": "#3b6934",
+            "on-primary": "#ffffff", "surface-variant": "#e1e3e2", "surface-container-highest": "#e1e3e2",
+            "primary-container": "#2d5a27", "surface-container-high": "#e7e8e7",
+            "secondary-container": "#ffa536", "surface-container-low": "#f3f4f3",
+            "on-surface-variant": "#42493e", "surface-container-lowest": "#ffffff",
+          },
+          fontFamily: {
+            "headline-sm": ["Lexend"], "headline-md": ["Lexend"], "body-lg": ["Public Sans"],
+            "caption": ["Public Sans"], "label-md": ["Public Sans"], "display-lg": ["Lexend"],
+            "body-md": ["Public Sans"]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="font-body-md text-on-background bg-background antialiased selection:bg-green-200">
+
+  <!-- Splash Screen -->
+  <div id="page-splash"
+    class="fixed inset-0 z-[9999] bg-gradient-to-br from-green-800 via-green-700 to-green-900 flex items-center justify-center">
+    <div class="flex flex-col items-center justify-center text-white px-6 text-center">
+      <div class="text-8xl animate-bounce">🌾</div>
+      <h1 class="mt-6 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-wide">Krishi Sahayak</h1>
+      <p class="mt-3 text-green-100 text-sm sm:text-base md:text-xl">Your Smart Farming Partner</p>
+      <div class="flex gap-3 mt-10">
+        <span class="w-3 h-3 bg-yellow-300 rounded-full animate-bounce"></span>
+        <span class="w-3 h-3 bg-yellow-300 rounded-full animate-bounce" style="animation-delay:.2s"></span>
+        <span class="w-3 h-3 bg-yellow-300 rounded-full animate-bounce" style="animation-delay:.4s"></span>
+      </div>
+      <p class="absolute bottom-6 text-xs md:text-sm text-green-100 opacity-80">Powered By Firebase</p>
+    </div>
+  </div>
+
+  <!-- Updated Topnav with dark mode classes -->
+<header id="topnav"
+  class="fixed top-0 left-0 w-full z-40 flex justify-between items-center px-3 sm:px-6 h-16 bg-white/95 dark:bg-[#191c1c]/95 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 shadow-xs font-[Lexend] transition-colors duration-200">
+  <!-- Left: Hamburger + Logo -->
+  <div class="flex items-center gap-1.5 sm:gap-3 min-w-0">
+    <!-- Hamburger Button for Mobile -->
+    <button onclick="toggleMobileSidebar()" 
+      class="lg:hidden p-2 -ml-1 text-stone-700 hover:bg-stone-100 rounded-lg active:scale-95 transition flex-shrink-0"
+      title="Open Menu">
+      <span class="material-symbols-outlined text-2xl">menu</span>
+    </button>
+
+    <!-- App Brand -->
+    <div class="flex items-center gap-2 cursor-pointer select-none min-w-0" onclick="navigateTo('dashboard')">
+      <span class="material-symbols-outlined text-green-800 text-2xl sm:text-3xl flex-shrink-0" style="font-variation-settings:'FILL' 1;">agriculture</span>
+      <h1 class="text-base sm:text-xl font-extrabold tracking-tight text-green-800 truncate">Krishi Sahayak</h1>
+    </div>
+  </div>
+
+  <!-- Center: Desktop Links (Hidden on Mobile) -->
+  <div class="hidden md:flex items-center gap-5 lg:gap-6">
+    <a class="nav-top-link active cursor-pointer" data-page="dashboard" onclick="navigateTo('dashboard')">Dashboard</a>
+    <a class="nav-top-link cursor-pointer" data-page="crop-health" onclick="navigateTo('crop-health')">Crop Health</a>
+    <a class="nav-top-link cursor-pointer" data-page="market" onclick="navigateTo('market')">Market Trends</a>
+    <a class="nav-top-link cursor-pointer" data-page="subsidies" onclick="navigateTo('subsidies')">Government Schemes</a>
+    <a class="nav-top-link cursor-pointer" data-page="ai-assistant" onclick="navigateTo('ai-assistant')">AI Assistant</a>
+  </div>
+
+ <!-- Right: Controls -->
+<div class="topnav-right relative flex items-center gap-2 sm:gap-3 flex-shrink-0"></div>
+    <!-- Language Selector -->
+    <div id="languageSelector" class="relative">
+      <button id="languageBtn"
+        onclick="changeLanguage()"
+        class="px-2.5 py-1.5 bg-stone-100 rounded-lg text-xs font-semibold text-stone-700 hover:bg-stone-200 transition-colors whitespace-nowrap">
+        EN ▼
+      </button>
+      
+      </div>
+
+  <!-- Notification Button -->
+<div class="relative" id="notification-wrapper">
+
+  <button
+  id="notification-btn"
+  type="button"
+  onclick="this.nextElementSibling.classList.toggle('hidden')"
+  class="p-2 rounded-xl text-stone-600 hover:bg-stone-100 transition-colors flex items-center justify-center"
+  title="Notifications"
+  aria-label="Notifications">
+
+  <span class="material-symbols-outlined text-xl">
+    notifications
+  </span>
+</button>
+
+  <!-- Notification Popup -->
+  <div
+    id="notification-panel"
+    class="hidden absolute right-0 top-12 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-stone-200 z-[9999] overflow-hidden">
+
+    <!-- Header -->
+    <div class="px-4 py-3 border-b border-stone-100 flex items-center justify-between">
+      <h3 class="font-bold text-stone-800">
+        Notifications
+      </h3>
+
+      <span class="material-symbols-outlined text-green-700">
+        notifications
+      </span>
+    </div>
+
+    <!-- Empty Notification -->
+    <div class="px-6 py-10 text-center">
+
+      <span class="material-symbols-outlined text-5xl text-stone-300">
+        notifications_off
+      </span>
+
+      <p class="mt-3 font-semibold text-stone-700">
+        No new notifications
+      </p>
+
+      <p class="mt-1 text-sm text-stone-500">
+        You don't have any notifications yet.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+  <button
+  id="theme-toggle"
+  onclick="toggleDarkMode()"
+  class="p-2 rounded-xl text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors flex items-center justify-center"
+  title="Toggle Dark/Light Mode"
+  aria-label="Toggle Theme">
+  <span id="theme-toggle-icon" class="material-symbols-outlined text-xl">
+    dark_mode
+  </span>
+</button>
+    
+
+    <!-- User Avatar (Clickable to open Account) -->
+    <div onclick="navigateTo('account')" 
+      class="flex items-center gap-2 cursor-pointer hover:opacity-85 transition group flex-shrink-0" 
+      title="Farmer Account">
+      <img 
+        id="nav-user-avatar" 
+        src="https://ui-avatars.com/api/?name=Farmer&background=2d5a27&color=fff&bold=true" 
+        alt="Farmer Avatar" 
+        class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-full object-cover border border-stone-200 shadow-xs group-hover:ring-2 group-hover:ring-green-700 transition flex-shrink-0" />
+      <span 
+        id="nav-user-name" 
+        class="font-semibold text-stone-800 text-xs hidden md:inline-block group-hover:text-green-800 transition truncate max-w-[100px]">
+        Farmer
+      </span>
+    </div>
+
+    <!-- Logout Button (Desktop only: hidden on mobile to avoid overcrowding) -->
+    <!-- Replace this inside <div id="user-area"> in index.html -->
+<button 
+  onclick="logout()" 
+  class="bg-red-600 hover:bg-red-700 text-white text-[11px] sm:text-xs font-bold px-2 sm:px-3.5 py-1.5 rounded-lg transition active:scale-95 shadow-xs whitespace-nowrap">
+  Logout
+</button>
+  </div>
+</header>
+
+  <!-- ===== MOBILE BACKDROP OVERLAY ===== -->
+  <div id="sidebar-backdrop" 
+    onclick="toggleMobileSidebar()" 
+    class="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 hidden transition-opacity lg:hidden">
+  </div>
+
+  <!-- ===== APP LAYOUT CONTAINER ===== -->
+  <div id="app-layout" class="flex pt-16 min-h-screen">
+
+    <!-- ===== SIDE NAV BAR (Drawer on mobile, Fixed Sidebar on desktop) ===== -->
+    <aside id="sidenav"
+      class="fixed inset-y-0 left-0 z-50 w-72 bg-stone-50 border-r border-stone-200 p-5 flex flex-col space-y-2 font-[Lexend] text-sm -translate-x-full lg:translate-x-0 lg:static lg:w-64 lg:h-[calc(100vh-64px)] lg:sticky lg:top-16 lg:z-10 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none flex-shrink-0">
+      
+      <!-- Close button on Mobile Drawer -->
+      <div class="flex items-center justify-between lg:hidden pb-3 border-b border-stone-200 mb-2">
+        <div class="flex items-center gap-2 text-green-900 font-bold">
+          <span class="material-symbols-outlined text-green-800">agriculture</span>
+          <span>Krishi Menu</span>
+        </div>
+        <button onclick="toggleMobileSidebar()" class="p-1 rounded-lg text-stone-500 hover:bg-stone-200 transition">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Clickable Sidebar User Greeting -->
+      <div class="mb-4 px-2 py-1 cursor-pointer hover:opacity-85 transition rounded-xl" onclick="navigateTo('account'); toggleMobileSidebar(false);">
+        <p class="text-stone-500 text-xs font-medium">Hello,</p>
+        <h2 id="sidebar-user-name" class="text-base font-bold text-green-800 hover:underline truncate">Farmer</h2>
+        <p class="text-[10px] text-stone-400 uppercase tracking-wider mt-0.5">Modern Farming Partner</p>
+      </div>
+
+      <!-- Main Navigation Links -->
+      <nav class="flex-1 space-y-1 overflow-y-auto">
+        <a class="side-nav-link active cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-green-100/60 transition text-stone-700"
+          data-page="dashboard" 
+          onclick="navigateTo('dashboard'); toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">dashboard</span> 
+          <span>Dashboard</span>
+        </a>
+
+        <a class="side-nav-link cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-green-100/60 transition text-stone-700"
+          data-page="crop-health" 
+          onclick="navigateTo('crop-health'); toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined">potted_plant</span> 
+          <span>Crop Health</span>
+        </a>
+
+        <a class="side-nav-link cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-green-100/60 transition text-stone-700"
+          data-page="market" 
+          onclick="navigateTo('market'); toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined">trending_up</span> 
+          <span>Market Trends</span>
+        </a>
+
+        <a class="side-nav-link cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-green-100/60 transition text-stone-700"
+          data-page="subsidies" 
+          onclick="navigateTo('subsidies'); toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined">account_balance</span> 
+          <span>Government Schemes</span>
+        </a>
+
+        <a class="side-nav-link cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-green-100/60 transition text-stone-700"
+          data-page="ai-assistant" 
+          onclick="navigateTo('ai-assistant'); toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined">smart_toy</span> 
+          <span>AI Assistant</span>
+        </a>
+
+        <a class="side-nav-link cursor-pointer flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-green-100/60 transition text-stone-700"
+          data-page="calculator" 
+          onclick="navigateTo('calculator'); toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined">calculate</span> 
+          <span>Pesticide Calc</span>
+        </a>
+      </nav>
+
+      <!-- Bottom Profile & Support Links -->
+      <div class="pt-3 border-t border-stone-200 space-y-1">
+        <a class="side-nav-link cursor-pointer flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-green-100/60 transition text-stone-700"
+          data-page="account" 
+          onclick="navigateTo('account'); toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined">account_circle</span> 
+          <span id="nav-account-title">Profile</span>
+        </a>
+
+        <a class="side-nav-link cursor-pointer flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-green-100/60 transition text-stone-700" 
+          href="#" onclick="toggleMobileSidebar(false);">
+          <span class="material-symbols-outlined">contact_support</span> 
+          <span id="nav-support-title">Support</span>
+        </a>
+
+        <div class="mt-3 p-3 bg-[#2d5a27] text-white rounded-xl shadow-xs">
+          <p class="text-xs opacity-80 mb-1.5">Need help?</p>
+          <button onclick="navigateTo('ai-assistant'); toggleMobileSidebar(false);" 
+            class="w-full bg-white text-[#2d5a27] font-bold py-1.5 rounded-lg text-xs hover:bg-stone-100 transition">
+            Help Center
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT (Takes full 100% width on mobile) ===== -->
+    <main class="flex-1 w-full overflow-x-hidden min-w-0">
+      <div id="page-language" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-dashboard" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-crop-health" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-market" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-subsidies" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-ai-assistant" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-calculator" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-profile" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      <div id="page-account" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+      
+      <div id="page-loading" class="page-content min-h-[80vh]">
+        <div class="flex flex-col items-center justify-center min-h-[80vh]">
+          <h2 class="text-3xl font-bold text-green-700">Loading...</h2>
+          <p class="text-gray-500 mt-2">Please wait</p>
+        </div>
+      </div>
+
+      <div id="page-login" class="page-content p-4 md:p-8 max-w-7xl mx-auto w-full"></div>
+    </main>
+  </div>
+
+  <!-- ===== FLOATING AI BUTTON ===== -->
+  <button id="fab-ai" onclick="navigateTo('ai-assistant')"
+    class="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 w-14 h-14 sm:w-16 sm:h-16 bg-[#2d5a27] text-white rounded-full flex items-center justify-center shadow-2xl shadow-green-900/40 z-30 hover:scale-110 active:scale-90 transition-all group">
+    <span class="material-symbols-outlined text-2xl sm:text-3xl" style="font-variation-settings:'FILL' 1;">smart_toy</span>
+    <span
+      class="absolute right-full mr-3 bg-stone-900 text-white text-xs px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+      Ask Krishak AI
+    </span>
+  </button>
+
+  <!-- Inline Script for the Mobile Drawer Toggle -->
+  <script>
+    function toggleMobileSidebar(forceState) {
+      const sidebar = document.getElementById("sidenav");
+      const backdrop = document.getElementById("sidebar-backdrop");
+      if (!sidebar || !backdrop) return;
+
+      const shouldOpen = forceState !== undefined 
+        ? forceState 
+        : sidebar.classList.contains("-translate-x-full");
+
+      if (shouldOpen) {
+        sidebar.classList.remove("-translate-x-full");
+        backdrop.classList.remove("hidden");
+        document.body.style.overflow = "hidden"; // prevent background scroll when drawer is open
+      } else {
+        sidebar.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+    }
+  </script>
+
+  <!-- External & Firebase SDKs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- Core App Scripts -->
+  <script src="config.js"></script>
+  <script src="translations.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/auth.js"></script>
+
+  <!-- Page View Scripts -->
+  <script src="pages/dashboard.js"></script>
+  <script src="pages/crop-health.js"></script>
+  <script src="pages/market.js"></script>
+  <script src="pages/subsidies.js"></script>
+  <script src="pages/ai-assistant.js"></script>
+  <script src="pages/calculator.js"></script>
+  <script src="pages/profile.js"></script>
+  <script src="pages/account.js"></script>
+  <script src="pages/login.js"></script>
+  <script src="pages/language.js"></script>
+  <script src="app.js"></script>
+  </body>
+  </html>

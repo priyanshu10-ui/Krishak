@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c2c9bb",
+                        "on-tertiary-container": "#accba5",
+                        "surface-dim": "#d9dad9",
+                        "secondary": "#895100",
+                        "on-tertiary-fixed": "#062108",
+                        "on-secondary-container": "#6c3f00",
+                        "primary-fixed": "#bcf0ae",
+                        "background": "#f8faf9",
+                        "tertiary": "#253f23",
+                        "primary-fixed-dim": "#a1d494",
+                        "surface-container": "#edeeed",
+                        "on-secondary-fixed": "#2c1700",
+                        "on-background": "#191c1c",
+                        "tertiary-fixed": "#cbebc3",
+                        "inverse-surface": "#2e3131",
+                        "outline": "#72796e",
+                        "secondary-fixed-dim": "#ffb86c",
+                        "tertiary-container": "#3b5739",
+                        "error": "#ba1a1a",
+                        "surface": "#f8faf9",
+                        "on-primary-fixed": "#002201",
+                        "inverse-on-surface": "#f0f1f0",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#afcfa9",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#9dd090",
+                        "on-surface": "#191c1c",
+                        "on-tertiary-fixed-variant": "#324d30",
+                        "secondary-fixed": "#ffdcbc",
+                        "surface-bright": "#f8faf9",
+                        "inverse-primary": "#a1d494",
+                        "primary": "#154212",
+                        "surface-tint": "#3b6934",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e3e2",
+                        "surface-container-highest": "#e1e3e2",
+                        "primary-container": "#2d5a27",
+                        "surface-container-high": "#e7e8e7",
+                        "on-primary-fixed-variant": "#23501e",
+                        "secondary-container": "#ffa536",
+                        "surface-container-low": "#f3f4f3",
+                        "on-surface-variant": "#42493e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#683c00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "1.25rem",
+                        "unit-1": "0.25rem",
+                        "unit-2": "0.5rem",
+                        "unit-8": "2rem",
+                        "base": "4px",
+                        "unit-6": "1.5rem",
+                        "gutter": "1rem",
+                        "unit-4": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Lexend"],
+                        "headline-md": ["Lexend"],
+                        "body-lg": ["Public Sans"],
+                        "caption": ["Public Sans"],
+                        "label-md": ["Public Sans"],
+                        "display-lg": ["Lexend"],
+                        "body-md": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #f8faf9;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/80 backdrop-blur-md border-b border-stone-100 dark:border-stone-800 shadow-sm shadow-green-900/5 font-lexend antialiased">
+<div class="text-xl font-extrabold tracking-tight text-green-800 dark:text-green-400">Krishi Sahayak</div>
+<div class="hidden md:flex flex-1 max-w-md mx-8">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400">search</span>
+<input class="w-full bg-stone-50 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary-container/20" placeholder="Search for crops, pests, or techniques..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-stone-50 transition-colors text-stone-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-stone-50 transition-colors text-stone-500">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<div class="flex min-h-screen pt-16">
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden lg:flex flex-col h-[calc(100vh-64px)] w-64 border-r border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 py-6 px-4 space-y-2 sticky top-16">
+<div class="px-3 mb-6">
+<div class="flex items-center gap-3 mb-1">
+<img alt="Farmer Profile" class="w-10 h-10 rounded-full border-2 border-primary-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDilgnD01PWGsb-3_DX6Q6lyv7D_LQEQY8peyK6buDOM1gltakOoVJG2zjKirc9e1-lQNU5uFVxBVnK-7Q-8AR-1MOevHW5sSye9J6m0Kh3cXZHmIAt8zRTqQHwX9_nXYQG4QLheYmAo2RfuGTPbgdGOarhwQXzetde8QlfojRjVXZX2fTLiSebEUkJdXAfq2tFSdyhJFWg4VAmR2CQ-8gKgwTvWvrKbGWVqVNzcK7ASwShm1GYerIm0vNBvC9-rluXDS52yR0h_M0X"/>
+<div>
+<p class="font-headline-sm text-green-800 dark:text-green-400 text-sm">Krishi Sahayak</p>
+<p class="text-caption text-stone-500">Modern Farming Partner</p>
+</div>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-3 py-2 hover:bg-stone-200 dark:hover:bg-stone-800 transition-all duration-200 ease-in-out font-lexend text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-3 py-2 hover:bg-stone-200 dark:hover:bg-stone-800 transition-all duration-200 ease-in-out font-lexend text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="potted_plant">potted_plant</span>
+                    Crop Health
+                </a>
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-3 py-2 hover:bg-stone-200 dark:hover:bg-stone-800 transition-all duration-200 ease-in-out font-lexend text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+                    Market Trends
+                </a>
+<a class="flex items-center gap-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 font-bold rounded-lg px-3 py-2 transition-all duration-200 ease-in-out font-lexend text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+                    AI Assistant
+                </a>
+</nav>
+<div class="pt-6 mt-auto border-t border-stone-200 dark:border-stone-800">
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-3 py-2 hover:bg-stone-200 dark:hover:bg-stone-800 transition-all duration-200 font-lexend text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-3 py-2 hover:bg-stone-200 dark:hover:bg-stone-800 transition-all duration-200 font-lexend text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                    Support
+                </a>
+<button class="mt-4 w-full py-2 px-4 bg-primary text-white rounded-lg font-lexend text-sm font-semibold active:scale-95 transition-transform">
+                    Help Center
+                </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full bg-background relative overflow-hidden flex flex-col md:flex-row h-[calc(100vh-64px)]">
+<!-- Left Panel: AI Assistant Chat -->
+<section class="flex-1 flex flex-col border-r border-stone-100 bg-white shadow-sm overflow-hidden">
+<!-- Chat Header -->
+<div class="px-6 py-4 border-b border-stone-50 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="smart_toy">smart_toy</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-green-900">Sahayak AI</h2>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<p class="text-caption text-stone-500">Online | Knowledge Base Updated</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Area -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Received Message -->
+<div class="flex gap-3 max-w-[85%]">
+<div class="w-8 h-8 rounded-full bg-stone-100 flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="bg-stone-50 p-4 rounded-2xl rounded-tl-none border border-stone-100">
+<p class="font-body-md text-on-surface">Namaste! I am your Krishi Sahayak. How can I help you improve your farming yields today?</p>
+<span class="text-[10px] text-stone-400 mt-2 block">10:42 AM</span>
+</div>
+</div>
+<!-- Example Queries (Interactive Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
+<button class="text-left p-4 rounded-xl border border-stone-100 bg-white hover:border-primary-container hover:bg-primary-container/5 transition-all group">
+<p class="text-label-md text-stone-600 group-hover:text-primary">"When should I harvest my wheat?"</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-caption text-stone-400">Crop Cycle</span>
+<span class="material-symbols-outlined text-stone-300 group-hover:text-primary-container" data-icon="arrow_forward_ios" style="font-size: 14px">arrow_forward_ios</span>
+</div>
+</button>
+<button class="text-left p-4 rounded-xl border border-stone-100 bg-white hover:border-primary-container hover:bg-primary-container/5 transition-all group">
+<p class="text-label-md text-stone-600 group-hover:text-primary">"Best fertilizer for tomatoes?"</p>
+<div class="flex items-center justify-between mt-2">
+<span class="text-caption text-stone-400">Soil Health</span>
+<span class="material-symbols-outlined text-stone-300 group-hover:text-primary-container" data-icon="arrow_forward_ios" style="font-size: 14px">arrow_forward_ios</span>
+</div>
+</button>
+</div>
+<!-- User Message -->
+<div class="flex gap-3 max-w-[85%] ml-auto flex-row-reverse">
+<div class="w-8 h-8 rounded-full bg-primary-container flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" data-icon="person">person</span>
+</div>
+<div class="bg-primary text-white p-4 rounded-2xl rounded-tr-none">
+<p class="font-body-md">My rice leaves are turning yellow at the edges. What should I do?</p>
+<span class="text-[10px] text-white/60 mt-2 block">10:45 AM</span>
+</div>
+</div>
+<!-- AI Thinking -->
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-stone-100 flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex items-center gap-1 p-2">
+<span class="w-1.5 h-1.5 rounded-full bg-stone-300 animate-pulse"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-stone-300 animate-pulse delay-75"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-stone-300 animate-pulse delay-150"></span>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-4 border-t border-stone-100 bg-stone-50/50">
+<div class="flex items-center gap-3 bg-white p-2 rounded-2xl border border-stone-200 shadow-sm focus-within:ring-2 focus-within:ring-primary-container/20 transition-all">
+<button class="p-2 text-stone-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<input class="flex-1 border-none focus:ring-0 text-body-md py-2" placeholder="Type your query or use voice..." type="text"/>
+<div class="flex items-center gap-1">
+<button class="p-2.5 rounded-xl bg-stone-50 text-stone-600 hover:bg-secondary-container hover:text-on-secondary-container transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="mic" data-weight="fill" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<button class="p-2.5 rounded-xl bg-primary text-white hover:bg-primary-container transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Quick Links & Communication -->
+<section class="w-full md:w-80 lg:w-96 p-6 space-y-6 overflow-y-auto bg-stone-50/30">
+<h3 class="font-headline-sm text-green-900 mb-4">Quick Support</h3>
+<!-- Communication Cards -->
+<div class="space-y-4">
+<a class="group block bg-white p-4 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-primary-container/20 transition-all" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-green-900">WhatsApp Support</h4>
+<p class="text-caption text-stone-500">Immediate help from our agents</p>
+</div>
+<span class="material-symbols-outlined text-stone-300" data-icon="open_in_new">open_in_new</span>
+</div>
+</a>
+<a class="group block bg-white p-4 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-primary-container/20 transition-all" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-green-900">Community Forums</h4>
+<p class="text-caption text-stone-500">Connect with 10k+ farmers</p>
+</div>
+<span class="material-symbols-outlined text-stone-300" data-icon="chevron_right">chevron_right</span>
+</div>
+</a>
+<a class="group block bg-white p-4 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-primary-container/20 transition-all" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-green-900">Expert Contacts</h4>
+<p class="text-caption text-stone-500">Soil scientists &amp; agronomists</p>
+</div>
+<span class="material-symbols-outlined text-stone-300" data-icon="chevron_right">chevron_right</span>
+</div>
+</a>
+</div>
+<!-- Featured Expert Card -->
+<div class="bg-primary-container rounded-2xl p-5 text-white shadow-lg overflow-hidden relative">
+<div class="relative z-10">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] uppercase tracking-wider font-bold mb-4">
+                            Featured Specialist
+                        </div>
+<div class="flex items-center gap-3 mb-4">
+<img alt="Expert Profile" class="w-12 h-12 rounded-full border-2 border-white/20" data-alt="Close-up portrait of a professional female agricultural expert in a white lab coat with blurred farm fields in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsjNBqhjZMQvN2NwztMxZjS_kjvtiOydT2-8Hj9bhLfTZSr1g0pjsooCJaSmt2qJqCFeGSY5z_f210vPsv2p3ILbv8bJnCAx5vJWnphKwC8WbXSxkZyCjMayDns4Tq--N0pD9FbInVvTKZqI_uZPdtq1g66gmKdVXwBJNt7Q8NdU1MeRGeqf4gJzEMMrPz0esLKcU2yW1tveCQb0FetwdZOhHwH-NSyxIr8tegdL6S2AvFHUtA9EMqbvhY3hz5RKnUt13J7cLk2j0v"/>
+<div>
+<h4 class="font-headline-sm text-base">Dr. Sarah Verma</h4>
+<p class="text-caption text-white/70">Pest Control Expert</p>
+</div>
+</div>
+<button class="w-full py-2.5 bg-white text-primary rounded-xl font-lexend text-sm font-bold shadow-md active:scale-95 transition-transform">
+                            Book Consultation
+                        </button>
+</div>
+<!-- Abstract decoration -->
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+</div>
+<!-- Learning Resource Card (Bento Style) -->
+<div class="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm flex flex-col h-48 group">
+<div class="h-1/2 overflow-hidden">
+<img alt="Farmer Learning" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Wide angle shot of sun-drenched terraced vegetable gardens with farmers working in the distance under soft morning light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVkqWLwX3kbfXPQDd17--EKh0Fcc1bqxySQ8a6viEWpPRDyu8NTttp5DnZ3ch-0YUItMlyWyli5bzo19Uz1t42sghl0aocMY9WeMQT_1OGE3O6K5uVhU1xVMeyYueYpBsmHLIfp9AzLfkrYivMK_vfkO7ucKnlPSJPH4q7vNSUXSrrtwtwKtFcHPNeuozJJ3-H0qDQ6RFmX2mIklc29LWby1jOe0QGhD0sByUuEl1Hm1kW72cdOda4LdToO9I7cmwzuiJPEzExW_cX"/>
+</div>
+<div class="p-3">
+<h5 class="text-label-md text-green-900">New: Organic Pest Control</h5>
+<p class="text-[11px] text-stone-500">Video Guide • 12 mins</p>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-white/95 dark:bg-stone-900/95 backdrop-blur-lg lg:hidden rounded-t-2xl border-t border-stone-100 dark:border-stone-800 shadow-[0_-4px_12px_rgba(45,90,39,0.08)]">
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 px-4 py-1.5 font-lexend text-[11px] font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+            Home
+        </a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 px-4 py-1.5 font-lexend text-[11px] font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="agriculture">agriculture</span>
+            Crops
+        </a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 px-4 py-1.5 font-lexend text-[11px] font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+            Market
+        </a>
+<a class="flex flex-col items-center justify-center bg-green-50 dark:bg-green-900/40 text-green-800 dark:text-green-200 rounded-xl px-4 py-1.5 font-lexend text-[11px] font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="mic">mic</span>
+            AI Chat
+        </a>
+</nav>
+</body></html>

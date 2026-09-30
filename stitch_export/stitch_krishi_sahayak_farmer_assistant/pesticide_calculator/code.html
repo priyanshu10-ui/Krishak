@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pesticide Calculator - Krishi Sahayak</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f0",
+                        "error-container": "#ffdad6",
+                        "primary": "#154212",
+                        "secondary-fixed-dim": "#ffb86c",
+                        "on-primary-fixed": "#002201",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#2d5a27",
+                        "inverse-surface": "#2e3131",
+                        "outline": "#72796e",
+                        "on-secondary-container": "#6c3f00",
+                        "surface-container": "#edeeed",
+                        "on-surface-variant": "#42493e",
+                        "tertiary": "#253f23",
+                        "surface-bright": "#f8faf9",
+                        "on-surface": "#191c1c",
+                        "outline-variant": "#c2c9bb",
+                        "primary-fixed-dim": "#a1d494",
+                        "on-primary-container": "#9dd090",
+                        "secondary": "#895100",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#062108",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#cbebc3",
+                        "on-secondary-fixed": "#2c1700",
+                        "on-primary-fixed-variant": "#23501e",
+                        "surface-tint": "#3b6934",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#bcf0ae",
+                        "on-tertiary-fixed-variant": "#324d30",
+                        "surface-container-highest": "#e1e3e2",
+                        "surface-variant": "#e1e3e2",
+                        "secondary-fixed": "#ffdcbc",
+                        "surface-container-high": "#e7e8e7",
+                        "on-tertiary-container": "#accba5",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d9dad9",
+                        "tertiary-container": "#3b5739",
+                        "surface": "#f8faf9",
+                        "on-error": "#ffffff",
+                        "background": "#f8faf9",
+                        "secondary-container": "#ffa536",
+                        "inverse-primary": "#a1d494",
+                        "tertiary-fixed-dim": "#afcfa9",
+                        "on-background": "#191c1c",
+                        "surface-container-low": "#f3f4f3",
+                        "on-secondary-fixed-variant": "#683c00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Lexend"],
+                        "headline-md": ["Lexend"],
+                        "caption": ["Public Sans"],
+                        "display-lg": ["Lexend"],
+                        "label-md": ["Public Sans"],
+                        "body-lg": ["Public Sans"],
+                        "body-md": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed inset-y-0 left-0 z-50 hidden lg:flex flex-col p-4 bg-white dark:bg-stone-900 h-full w-64 lg:w-72 border-r border-stone-200 dark:border-stone-800 shadow-sm dark:shadow-none transition-all duration-200 ease-in-out">
+<div class="mb-8 px-4">
+<h1 class="text-xl font-black text-green-800 dark:text-green-400 tracking-tight font-headline-md">AgriGrowth</h1>
+<p class="text-stone-500 text-xs font-label-md">Precision Farming</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-4 py-3 hover:text-green-700 hover:bg-stone-50 transition-colors rounded-lg font-lexend text-sm font-medium" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-4 py-3 hover:text-green-700 hover:bg-stone-50 transition-colors rounded-lg font-lexend text-sm font-medium" href="#">
+<span class="material-symbols-outlined">calendar_month</span> Crop Calendar
+            </a>
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-4 py-3 hover:text-green-700 hover:bg-stone-50 transition-colors rounded-lg font-lexend text-sm font-medium" href="#">
+<span class="material-symbols-outlined">storefront</span> Marketplace
+            </a>
+<a class="flex items-center gap-3 bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-lg px-4 py-3 font-semibold font-lexend text-sm" href="#">
+<span class="material-symbols-outlined">calculate</span> Calculator
+            </a>
+<a class="flex items-center gap-3 text-stone-600 dark:text-stone-400 px-4 py-3 hover:text-green-700 hover:bg-stone-50 transition-colors rounded-lg font-lexend text-sm font-medium" href="#">
+<span class="material-symbols-outlined">person</span> Profile
+            </a>
+</nav>
+<div class="mt-auto p-4 bg-primary-container rounded-xl text-white">
+<p class="text-xs font-label-md opacity-80 mb-2">Need Expert Advice?</p>
+<button class="w-full bg-white text-primary-container py-2 rounded-lg font-bold text-sm">Consult Specialist</button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<div class="lg:pl-72 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 flex items-center justify-between px-6 h-16 w-full bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md border-b border-stone-200 dark:border-stone-800">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-stone-900 dark:text-white font-headline-sm">Pesticide Calculator</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-stone-600 hover:bg-stone-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-stone-600 hover:bg-stone-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Farmer profile photo" class="w-full h-full object-cover" data-alt="close-up portrait of a middle-aged farmer with a friendly expression wearing a straw hat in a sunlit field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhdxXxtH6hEtqrgBvopYBaMKSrp770j6VtVBEQ-VVFza_cJuPUDmtnRasBokigBouR3ASw4f7gAGGZF4SJrTUSDGeTaLdgE11bP5suQ6uWeMHRygNRhv_38XUAxbUFhYIXctLV0H7k-4IqOvF5qPuvRnjrW4S2GT60U4Ur6xwIIKX3ekQVLkuDSab2E8AkMG6A354YnXmbCxQHn7STfp6hIC9yr4Bw0iC_3nO_JRMDKUeXWbaQ0NSdgsv2l_11108y9FkbVU1QEjo6"/>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<main class="p-6 md:p-8 flex-1 max-w-7xl mx-auto w-full">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Input and Results (Bento Grid Style) -->
+<div class="lg:col-span-8 space-y-6">
+<!-- Main Calculation Area -->
+<section class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-primary-container p-2 rounded-lg">
+<span class="material-symbols-outlined text-white">biotech</span>
+</div>
+<h2 class="font-headline-md text-primary">Calculation Input</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-md text-on-surface-variant px-1">Land Area</label>
+<div class="relative">
+<input class="w-full p-3 bg-surface border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all font-body-md" placeholder="Enter value" type="number"/>
+<select class="absolute right-2 top-1.5 bg-surface-container-high border-none rounded px-2 py-1.5 font-label-md text-on-surface focus:ring-0">
+<option>Acres</option>
+<option>Hectares</option>
+</select>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-on-surface-variant px-1">Crop Type</label>
+<div class="relative">
+<select class="w-full p-3 bg-surface border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary-container outline-none appearance-none transition-all font-body-md">
+<option disabled="" selected="" value="">Select crop</option>
+<option>Rice / Paddy</option>
+<option>Wheat</option>
+<option>Cotton</option>
+<option>Maize</option>
+<option>Sugarcane</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="font-label-md text-on-surface-variant px-1">Target Pest / Disease</label>
+<div class="relative">
+<input class="w-full p-3 bg-surface border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary-container outline-none transition-all font-body-md" placeholder="e.g. Stem Borer, Leaf Blight" type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-3 text-on-surface-variant">search</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-8 bg-primary-container text-white py-4 rounded-xl font-headline-sm flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">calculate</span>
+                            Calculate Requirements
+                        </button>
+</section>
+<!-- Results Section -->
+<section class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="bg-primary/5 p-6 border-b border-outline-variant flex justify-between items-center">
+<div>
+<h2 class="font-headline-md text-primary">Calculation Results</h2>
+<p class="text-on-surface-variant font-caption">Generated for 5.0 Acres of Rice</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 bg-white border border-outline-variant rounded-lg hover:bg-stone-50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">share</span>
+</button>
+<button class="p-2 bg-white border border-outline-variant rounded-lg hover:bg-stone-50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+</div>
+<div class="p-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+<div class="bg-surface-container-low p-4 rounded-xl border border-stone-100">
+<p class="font-label-md text-on-surface-variant mb-1">Recommended Pesticide</p>
+<p class="font-headline-sm text-primary">Monocrotophos 36% SL</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-stone-100">
+<p class="font-label-md text-on-surface-variant mb-1">Total Dosage</p>
+<p class="font-headline-sm text-primary">2.5 Liters</p>
+<p class="text-xs text-on-surface-variant mt-1">(0.5 Liters per Acre)</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-stone-100 md:col-span-2">
+<p class="font-label-md text-on-surface-variant mb-1">Water for Dilution</p>
+<div class="flex items-end gap-2">
+<p class="font-headline-sm text-primary">1,000 Liters</p>
+<p class="text-on-surface-variant font-body-md mb-0.5">@ 200L / Acre</p>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="font-label-md text-on-surface uppercase tracking-wider">Safety &amp; PPE Recommendations</h3>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<div class="flex flex-col items-center p-3 rounded-lg border border-outline-variant bg-stone-50 text-center">
+<span class="material-symbols-outlined text-secondary mb-1">masks</span>
+<span class="font-caption font-bold">Face Mask</span>
+</div>
+<div class="flex flex-col items-center p-3 rounded-lg border border-outline-variant bg-stone-50 text-center">
+<span class="material-symbols-outlined text-secondary mb-1">front_hand</span>
+<span class="font-caption font-bold">Gloves</span>
+</div>
+<div class="flex flex-col items-center p-3 rounded-lg border border-outline-variant bg-stone-50 text-center">
+<span class="material-symbols-outlined text-secondary mb-1">visibility</span>
+<span class="font-caption font-bold">Goggles</span>
+</div>
+<div class="flex flex-col items-center p-3 rounded-lg border border-outline-variant bg-stone-50 text-center">
+<span class="material-symbols-outlined text-secondary mb-1">water_full</span>
+<span class="font-caption font-bold">Boots</span>
+</div>
+</div>
+<div class="bg-error-container/30 p-4 rounded-lg border-l-4 border-error mt-4">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-error">warning</span>
+<p class="text-on-error-container text-sm">Do not spray against the wind direction. Keep children and livestock away from the treated area for 48 hours.</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+<button class="flex items-center justify-center gap-2 py-3 border-2 border-primary-container text-primary-container font-bold rounded-xl hover:bg-green-50 transition-colors">
+<span class="material-symbols-outlined">save</span>
+                                    Save Calculation
+                                </button>
+<button class="flex items-center justify-center gap-2 py-3 bg-[#25D366] text-white font-bold rounded-xl hover:opacity-90 shadow-md">
+<span class="material-symbols-outlined">chat</span>
+                                    Share to WhatsApp
+                                </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Recent History & Guidance -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Recent Calculations -->
+<section class="bg-surface-container-high rounded-xl p-6 border border-outline-variant">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-sm text-on-surface">Recent Activity</h3>
+<button class="text-primary-container font-label-md hover:underline">View All</button>
+</div>
+<div class="space-y-3">
+<!-- History Item 1 -->
+<div class="bg-white p-3 rounded-lg border border-stone-200 flex items-center gap-3">
+<div class="bg-secondary-fixed text-secondary p-2 rounded-lg">
+<span class="material-symbols-outlined">grass</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-on-surface">Cotton Field A</p>
+<p class="text-xs text-on-surface-variant">2.5 Ac • 2 days ago</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<!-- History Item 2 -->
+<div class="bg-white p-3 rounded-lg border border-stone-200 flex items-center gap-3">
+<div class="bg-tertiary-fixed text-tertiary p-2 rounded-lg">
+<span class="material-symbols-outlined">agriculture</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-on-surface">Wheat Plot 4</p>
+<p class="text-xs text-on-surface-variant">10.0 Ac • 1 week ago</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<!-- History Item 3 -->
+<div class="bg-white p-3 rounded-lg border border-stone-200 flex items-center gap-3 opacity-70">
+<div class="bg-stone-200 text-stone-600 p-2 rounded-lg">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-on-surface">Sugarcane Block</p>
+<p class="text-xs text-on-surface-variant">1.2 Ac • 15 Oct</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Guidance Card -->
+<div class="relative overflow-hidden rounded-xl h-64 group">
+<img alt="Farmer checking crops" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="cinematic close up of a farmer's weathered hands gently inspecting green wheat stalks in a vast sun-drenched field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEXFAvOrpBOukQSDesxopKAsO1OF9hKNrwBazT2akICXQNlqQTw10YWjBoz4nUfOfMktotpU-aYfbXnuaxr-K5QIa-L3PDA9da-Th9ToIvF9GQ-SYV9uiPeLR0Xnv1P_Wm88c9M9EUVcDcqmPrHHP6i3g2uXbveBGHAfTjt0rLm1xwvPCtYR-jbfH90-6zJql-9HZxJqEpn56s__XEFwUm6RAzwvIbQK2TOnPdDHckWWlU__554IPNqULQ_hDTaaQRHKdsquozVDXr"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent flex flex-col justify-end p-6">
+<h4 class="text-white font-headline-sm mb-2">Pest Management Guide</h4>
+<p class="text-white/80 text-sm mb-4">Learn about sustainable alternatives and biological pest control methods.</p>
+<button class="bg-white/20 backdrop-blur-md text-white border border-white/30 py-2 rounded-lg font-label-md hover:bg-white/30 transition-all">Read Guide</button>
+</div>
+</div>
+<!-- Weather Sync Mini Widget -->
+<section class="bg-white rounded-xl p-6 border border-outline-variant flex items-center gap-4">
+<div class="text-secondary">
+<span class="material-symbols-outlined text-4xl">sunny_snowing</span>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Ideal Spraying Window</p>
+<p class="text-sm text-green-700 font-bold">Good conditions expected at 6:00 AM</p>
+<p class="text-xs text-on-surface-variant mt-1">Wind: 4km/h • Humidity: 65%</p>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+<!-- Mobile Bottom Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-stone-100 flex justify-around items-center h-16 z-50 px-2">
+<button class="flex flex-col items-center gap-1 text-stone-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-label-md">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-stone-400">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-[10px] font-label-md">Calendar</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calculate</span>
+<span class="text-[10px] font-label-md font-bold">Calc</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-stone-400">
+<span class="material-symbols-outlined">storefront</span>
+<span class="text-[10px] font-label-md">Store</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-stone-400">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-label-md">Profile</span>
+</button>
+</nav>
+</body></html>
