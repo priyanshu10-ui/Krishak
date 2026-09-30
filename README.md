@@ -241,7 +241,7 @@ Some planned improvements include:
 
 ## 👨‍💻 Project Team
 
-### 🌾 AgriHarvest Innovators
+### 🌾 Gryffindor
 
 | Member                 | Role                |
 | ---------------------- | ------------------- |
@@ -256,7 +256,7 @@ Some planned improvements include:
 
 **Krishi Sahayak** was developed as a collaborative project focused on using modern technologies to address real-world challenges in agriculture.
 
-### Built with ❤️ by Team AgriHarvest Innovators
+### Built with ❤️ by Team Gryffindor
 
 <p align="center">
 
