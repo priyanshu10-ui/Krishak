@@ -40,7 +40,7 @@ function renderLogin() {
           <button
             onclick="showPhoneStep()"
             class="w-full mt-3 bg-green-50 text-green-700 border border-green-600 rounded-xl py-3.5 font-semibold hover:bg-green-100 transition active:scale-[0.98]">
-            📱 Continue with  Number
+            📱 Continue with Phone Number
           </button>
         </div>
 
