@@ -372,35 +372,494 @@ function renderCropHealth() {
   `;
 }
 
-function handleImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+async function handleImageUpload(event) {
+
+    const file =
+        event?.target?.files?.[0];
+
+    if (!file) return;
+
+
+    // --------------------------------------
+    // IMAGE ONLY
+    // --------------------------------------
+
+    if (!file.type.startsWith("image/")) {
+
+        alert(
+            "Please upload a crop or leaf image."
+        );
+
+        return;
+    }
+
+
+    const zone =
+        document.getElementById("upload-zone");
+
+    if (!zone) return;
+
+
+    // --------------------------------------
+    // SHOW PREVIEW + ANALYZING STATE
+    // --------------------------------------
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = async function (e) {
+
+        const originalImage =
+            e.target.result;
+
+
+        zone.innerHTML = `
+
+            <img
+                src="${originalImage}"
+                class="max-h-64 rounded-xl shadow-lg mb-4"
+                alt="Uploaded crop"
+            />
+
+            <p class="text-green-800 font-bold text-lg mb-2">
+                Image uploaded successfully
+            </p>
+
+            <p class="text-stone-500 text-sm mb-4">
+                AI is analyzing the actual crop image...
+            </p>
+
+            <div class="flex gap-2 justify-center">
+
+                <span class="typing-dot w-2 h-2 rounded-full bg-green-600"></span>
+
+                <span class="typing-dot w-2 h-2 rounded-full bg-green-600"></span>
+
+                <span class="typing-dot w-2 h-2 rounded-full bg-green-600"></span>
+
+            </div>
+        `;
+
+
+        try {
+
+            // --------------------------------------
+            // COMPRESS / RESIZE IMAGE
+            // --------------------------------------
+
+            const image =
+                new Image();
+
+
+            image.onload = async function () {
+
+                const MAX_SIZE = 1600;
+
+                let width =
+                    image.naturalWidth;
+
+                let height =
+                    image.naturalHeight;
+
+
+                if (
+                    width > MAX_SIZE ||
+                    height > MAX_SIZE
+                ) {
+
+                    if (width > height) {
+
+                        height =
+                            Math.round(
+                                height *
+                                (MAX_SIZE / width)
+                            );
+
+                        width = MAX_SIZE;
+
+                    } else {
+
+                        width =
+                            Math.round(
+                                width *
+                                (MAX_SIZE / height)
+                            );
+
+                        height = MAX_SIZE;
+                    }
+                }
+
+
+                const canvas =
+                    document.createElement("canvas");
+
+
+                canvas.width = width;
+                canvas.height = height;
+
+
+                const ctx =
+                    canvas.getContext("2d");
+
+
+                ctx.drawImage(
+                    image,
+                    0,
+                    0,
+                    width,
+                    height
+                );
+
+
+                const compressedImage =
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        0.85
+                    );
+
+
+                // --------------------------------------
+                // SEND REAL IMAGE TO BACKEND
+                // --------------------------------------
+
+                const response =
+                    await fetch(
+                        "http://127.0.0.1:5000/api/crop-diagnosis",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                image:
+                                    compressedImage
+                            })
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !result.success
+                ) {
+
+                    throw new Error(
+                        result.error ||
+                        "AI diagnosis failed."
+                    );
+                }
+
+
+                // --------------------------------------
+                // SHOW RESULT
+                // --------------------------------------
+
+                showCropDiagnosisResult(
+                    zone,
+                    result
+                );
+
+            };
+
+
+            image.onerror =
+                function () {
+
+                    throw new Error(
+                        "Could not process the image."
+                    );
+                };
+
+
+            image.src =
+                originalImage;
+
+
+        } catch (error) {
+
+            console.error(
+                "Crop diagnosis error:",
+                error
+            );
+
+
+            zone.innerHTML = `
+
+                <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-left w-full max-w-md">
+
+                    <h4 class="font-bold text-red-700 mb-2">
+                        ⚠️ Diagnosis failed
+                    </h4>
+
+                    <p class="text-sm text-gray-700">
+                        ${error.message || "Something went wrong while analyzing the image."}
+                    </p>
+
+                    <p class="text-sm text-gray-500 mt-2">
+                        Please try again with a clear crop/leaf photo.
+                    </p>
+
+                </div>
+
+            `;
+        }
+
+    };
+
+
+    reader.readAsDataURL(file);
+}
   
-  const lang = localStorage.getItem("selectedLanguage") || "en";
-  const t = translations[lang];
-  const zone = document.getElementById('upload-zone');
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    zone.innerHTML = `
-      <img src="${e.target.result}" class="max-h-64 rounded-xl shadow-lg mb-4" alt="Uploaded crop"/>
-      <p class="text-green-800 font-bold text-lg mb-2">${t.imageUploadedSuccessfully}</p>
-      <p class="text-stone-500 text-sm mb-4">${t.analyzingCropImage}</p>
-      <div class="flex gap-2"><span class="typing-dot w-2 h-2 rounded-full bg-green-600"></span><span class="typing-dot w-2 h-2 rounded-full bg-green-600"></span><span class="typing-dot w-2 h-2 rounded-full bg-green-600"></span></div>
+function showCropDiagnosisResult(zone, result) {
+
+    const confidence =
+        Number(result.confidence || 0);
+
+
+    const confidenceText =
+        `${confidence}%`;
+
+
+    const symptoms =
+        Array.isArray(result.symptoms)
+            ? result.symptoms
+            : [];
+
+
+    const treatment =
+        Array.isArray(result.treatment)
+            ? result.treatment
+            : [];
+
+
+    const prevention =
+        Array.isArray(result.prevention)
+            ? result.prevention
+            : [];
+
+
+    // --------------------------------------
+    // UNCERTAIN / UNRELIABLE RESULT
+    // --------------------------------------
+
+    if (!result.isReliable) {
+
+        zone.innerHTML += `
+
+                   </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 w-full max-w-xl">
+
+            <button
+                type="button"
+                onclick="continueToCropChatbot()"
+                class="flex-1 bg-[#2d5a27] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#154212] transition-colors">
+                💬 Continue with Chatbot
+            </button>
+
+            <button
+                type="button"
+                onclick="backToCropHealthStart()"
+                class="flex-1 bg-white border-2 border-[#2d5a27] text-[#2d5a27] px-6 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
+                ← Back to Crop Health
+            </button>
+
+        </div>
     `;
-    setTimeout(() => {
-      zone.innerHTML += `
-        <div class="mt-6 p-4 bg-[#ffdad6]/30 border border-[#ffdad6] rounded-xl text-left w-full max-w-md">
-          <h4 class="font-bold text-[#93000a] mb-1">
-            ⚠️ ${t.earlyBlightDetected}
-          </h4>
-          <p class="text-sm text-[#42493e]">
-            ${t.earlyBlightConfidence}
-          </p>
-          <button onclick="navigateTo('ai-assistant')" class="mt-3 bg-[#2d5a27] text-white px-6 py-2 rounded-lg font-bold text-sm">Ask Krishak AI</button>
-        </div>`;
-    }, 3000);
-  };
-  reader.readAsDataURL(file);
+
+    return;
+
+    }
+
+
+    // --------------------------------------
+    // FORMAT LISTS
+    // --------------------------------------
+
+    const symptomsHTML =
+        symptoms.length
+            ? symptoms
+                .map(
+                    item =>
+                        `<li>${item}</li>`
+                )
+                .join("")
+            : "<li>No clear symptoms provided.</li>";
+
+
+    const treatmentHTML =
+        treatment.length
+            ? treatment
+                .map(
+                    item =>
+                        `<li>${item}</li>`
+                )
+                .join("")
+            : "<li>No treatment information available.</li>";
+
+
+    const preventionHTML =
+        prevention.length
+            ? prevention
+                .map(
+                    item =>
+                        `<li>${item}</li>`
+                )
+                .join("")
+            : "<li>No prevention information available.</li>";
+
+
+    // --------------------------------------
+    // HEALTHY RESULT
+    // --------------------------------------
+
+    const isHealthy =
+        result.disease ===
+        "No visible disease detected";
+
+
+    const title =
+        isHealthy
+            ? "🌿 No visible disease detected"
+            : `⚠️ ${result.disease}`;
+
+
+    const titleColor =
+        isHealthy
+            ? "text-green-800"
+            : "text-[#93000a]";
+
+
+    // --------------------------------------
+    // FINAL RESULT
+    // --------------------------------------
+
+    zone.innerHTML += `
+
+        <div class="mt-6 p-5 bg-white border border-stone-200 rounded-2xl shadow-sm text-left w-full max-w-xl">
+
+            <h4 class="font-bold ${titleColor} text-xl mb-4">
+                ${title}
+            </h4>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+
+                <div class="bg-stone-50 p-3 rounded-xl">
+
+                    <p class="text-xs text-gray-500">
+                        Crop
+                    </p>
+
+                    <p class="font-bold text-gray-800">
+                        ${result.crop || "Unknown"}
+                    </p>
+
+                </div>
+
+
+                <div class="bg-stone-50 p-3 rounded-xl">
+
+                    <p class="text-xs text-gray-500">
+                        Confidence
+                    </p>
+
+                    <p class="font-bold text-gray-800">
+                        ${confidenceText}
+                    </p>
+
+                </div>
+
+
+                <div class="bg-stone-50 p-3 rounded-xl">
+
+                    <p class="text-xs text-gray-500">
+                        Severity
+                    </p>
+
+                    <p class="font-bold text-gray-800">
+                        ${result.severity || "Unknown"}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="mb-5">
+
+                <h5 class="font-bold text-gray-800 mb-2">
+                    🔍 Symptoms
+                </h5>
+
+                <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                    ${symptomsHTML}
+                </ul>
+
+            </div>
+
+
+            <div class="mb-5">
+
+                <h5 class="font-bold text-gray-800 mb-2">
+                    💊 Treatment / Solution
+                </h5>
+
+                <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                    ${treatmentHTML}
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h5 class="font-bold text-gray-800 mb-2">
+                    🛡️ Prevention
+                </h5>
+
+                <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                    ${preventionHTML}
+                </ul>
+
+            </div>
+
+
+                        <p class="text-xs text-gray-500 mt-5">
+                AI confidence is an estimate, not a laboratory-confirmed diagnosis.
+            </p>
+
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 w-full max-w-xl">
+
+            <button
+                type="button"
+                onclick="continueToCropChatbot()"
+                class="flex-1 bg-[#2d5a27] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#154212] transition-colors">
+                💬 Continue with Chatbot
+            </button>
+
+            <button
+                type="button"
+                onclick="backToCropHealthStart()"
+                class="flex-1 bg-white border-2 border-[#2d5a27] text-[#2d5a27] px-6 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors">
+                ← Back to Crop Health
+            </button>
+
+        </div>
+
+    `;
 }
 
 let cameraStream = null;

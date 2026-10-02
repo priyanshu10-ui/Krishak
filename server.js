@@ -23,7 +23,7 @@ const __dirname = path.dirname(__filename);
 // ==========================================
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "25mb" }));
 
 // Serve frontend files
 // This allows Vercel/Express to serve:
@@ -392,6 +392,343 @@ app.get("/api/mandi", async (req, res) => {
         });
     }
 });
+
+
+// ==========================================
+// CROP HEALTH AI VISION DIAGNOSIS
+// ==========================================
+
+app.post("/api/crop-diagnosis", async (req, res) => {
+
+    try {
+
+        // --------------------------------------
+        // CHECK GROQ
+        // --------------------------------------
+
+        if (!groq) {
+            return res.status(500).json({
+                success: false,
+                error: "GROQ_API_KEY is not configured on the server."
+            });
+        }
+
+
+        // --------------------------------------
+        // GET IMAGE
+        // --------------------------------------
+
+        const imageData = req.body?.image;
+
+        if (!imageData || typeof imageData !== "string") {
+            return res.status(400).json({
+                success: false,
+                error: "No crop image was received."
+            });
+        }
+
+
+        // --------------------------------------
+        // BASIC IMAGE VALIDATION
+        // --------------------------------------
+
+        if (!imageData.startsWith("data:image/")) {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid image format."
+            });
+        }
+
+
+        // --------------------------------------
+        // PREVENT VERY LARGE REQUESTS
+        // --------------------------------------
+
+        if (imageData.length > 26 * 1024 * 1024) {
+            return res.status(413).json({
+                success: false,
+                error: "Image is too large. Please upload a smaller image."
+            });
+        }
+
+
+        console.log("🌿 Crop image received for AI diagnosis");
+
+
+        // --------------------------------------
+        // AI VISION PROMPT
+        // --------------------------------------
+
+        const diagnosisPrompt = `
+You are the crop-health vision system for KrishiSahayak.
+
+Analyze the uploaded image carefully.
+
+IMPORTANT:
+This is a REAL image analysis task.
+Do NOT invent a disease just to provide an answer.
+
+Your first job is to determine whether the image is actually suitable
+for crop/plant disease analysis.
+
+If the image:
+- is not a plant/crop/leaf,
+- is too blurry,
+- is too dark,
+- does not show enough of the plant/leaf,
+- does not contain visible symptoms,
+- or the disease cannot be reliably distinguished,
+
+then set:
+
+"isReliable": false
+
+and explain why.
+
+If the image is suitable, identify:
+1. Most likely crop
+2. Most likely disease or healthy condition
+3. Model-reported confidence from 0 to 1
+4. Visible symptoms
+5. Severity
+6. Treatment / management steps
+7. Prevention steps
+
+Do NOT claim certainty when the visual evidence is weak.
+
+IMPORTANT ABOUT CONFIDENCE:
+The confidence value is a model-reported confidence estimate,
+NOT a scientifically calibrated probability.
+
+If you are uncertain between diseases, say so instead of forcing
+an exact disease name.
+
+If the plant appears healthy, use:
+"disease": "No visible disease detected"
+
+If disease identification is unreliable, use:
+"disease": "Unable to reliably identify"
+
+Return ONLY valid JSON.
+
+Use exactly this structure:
+
+{
+  "isReliable": true,
+  "crop": "string",
+  "disease": "string",
+  "confidence": 0.0,
+  "severity": "None | Mild | Moderate | Severe | Unknown",
+  "symptoms": [
+    "string"
+  ],
+  "treatment": [
+    "string"
+  ],
+  "prevention": [
+    "string"
+  ],
+  "reason": "string"
+}
+
+Rules:
+- confidence must be between 0 and 1.
+- If isReliable is false, confidence should normally be below 0.60.
+- If isReliable is false, disease should be "Unable to reliably identify".
+- Do not invent symptoms that are not visually supported.
+- Keep treatment practical and farmer-friendly.
+- Do not recommend dangerous chemical mixing or unsafe pesticide use.
+- For pesticides/fungicides, advise following the product label and local agricultural guidance.
+`;
+
+
+        // --------------------------------------
+        // CALL GROQ VISION MODEL
+        // --------------------------------------
+
+        console.log("🤖 Sending crop image to vision model...");
+
+
+        const completion =
+            await groq.chat.completions.create({
+
+                model: "qwen/qwen3.8-27b",
+
+                messages: [
+                    {
+                        role: "user",
+
+                        content: [
+                            {
+                                type: "text",
+                                text: diagnosisPrompt
+                            },
+
+                            {
+                                type: "image_url",
+
+                                image_url: {
+                                    url: imageData
+                                }
+                            }
+                        ]
+                    }
+                ],
+
+                temperature: 0.2,
+
+                max_completion_tokens: 1200,
+
+                response_format: {
+                    type: "json_object"
+                },
+
+                reasoning_effort: "none"
+            });
+
+
+        // --------------------------------------
+        // GET AI RESPONSE
+        // --------------------------------------
+
+        const rawResponse =
+            completion
+                ?.choices?.[0]
+                ?.message?.content;
+
+
+        if (!rawResponse) {
+            throw new Error(
+                "Vision model returned an empty response."
+            );
+        }
+
+
+        console.log(
+            "🤖 Vision response:",
+            rawResponse
+        );
+
+
+        // --------------------------------------
+        // PARSE JSON
+        // --------------------------------------
+
+        let diagnosis;
+
+        try {
+
+            diagnosis =
+                JSON.parse(rawResponse);
+
+        } catch (parseError) {
+
+            console.error(
+                "❌ Invalid AI JSON:",
+                rawResponse
+            );
+
+            return res.status(502).json({
+                success: false,
+                error: "AI returned an invalid diagnosis format."
+            });
+        }
+
+
+        // --------------------------------------
+        // NORMALIZE RESPONSE
+        // --------------------------------------
+
+        const confidence =
+            Number(diagnosis.confidence);
+
+        const safeConfidence =
+            Number.isFinite(confidence)
+                ? Math.max(
+                    0,
+                    Math.min(1, confidence)
+                )
+                : 0;
+
+
+        const isReliable =
+            diagnosis.isReliable === true &&
+            safeConfidence >= 0.60;
+
+
+        // --------------------------------------
+        // FINAL RESPONSE
+        // --------------------------------------
+
+        return res.json({
+
+            success: true,
+
+            isReliable: isReliable,
+
+            crop:
+                diagnosis.crop ||
+                "Unknown",
+
+            disease:
+                isReliable
+                    ? (
+                        diagnosis.disease ||
+                        "Unable to reliably identify"
+                    )
+                    : "Unable to reliably identify",
+
+            confidence:
+                Math.round(
+                    safeConfidence * 100
+                ),
+
+            severity:
+                diagnosis.severity ||
+                "Unknown",
+
+            symptoms:
+                Array.isArray(diagnosis.symptoms)
+                    ? diagnosis.symptoms
+                    : [],
+
+            treatment:
+                Array.isArray(diagnosis.treatment)
+                    ? diagnosis.treatment
+                    : [],
+
+            prevention:
+                Array.isArray(diagnosis.prevention)
+                    ? diagnosis.prevention
+                    : [],
+
+            reason:
+                diagnosis.reason ||
+                "The image could not be reliably interpreted."
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Crop diagnosis error:",
+            error
+        );
+
+        return res.status(
+            error?.status || 500
+        ).json({
+
+            success: false,
+
+            error:
+                error?.message ||
+                "Crop diagnosis failed."
+        });
+    }
+
+});
+
 
 // ==========================================
 // 404 API HANDLER
