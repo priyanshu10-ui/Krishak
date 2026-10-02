@@ -150,6 +150,33 @@ app.post("/api/chat", async (req, res) => {
         }
 
 
+       // ======================================
+// FARMER CONTEXT
+// ======================================
+
+const farmerLocation =
+    req.body.context?.location?.trim() || null;
+
+const currentWeather =
+    req.body.context?.weather?.trim() ||
+    "Weather information is currently unavailable.";
+
+const marketData =
+    req.body.context?.availableMarketPrices?.trim() ||
+    "Live mandi data is currently unavailable.";
+
+const selectedLanguage =
+    req.body.context?.language?.trim() ||
+    "English";
+
+console.log("🌍 Farmer location:", farmerLocation);
+console.log("🌐 Language:", selectedLanguage);
+
+
+// ======================================
+// DYNAMIC SYSTEM PROMPT
+// ======================================
+
 const DYNAMIC_SYSTEM_PROMPT = `
 You are "Krishak", the AI assistant of Krishi Sahayak.
 
