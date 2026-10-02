@@ -1,505 +1,2173 @@
-// AI Assistant (Krishak) Page - Powered by Groq API Backend
+// ============================================================
+// KRISHI SAHAYAK - KRISHAK AI ASSISTANT
+// Voice Input + Voice Output + NLP Intent Detection
+// Powered by Groq Backend
+// ============================================================
+
 let chatMessages = [
-  { 
-    role: 'ai', 
-    text: 'Namaste! 🙏 I am <strong>Krishak</strong>, your AI farming assistant. Ask me anything about crops, soil health, pest management, weather, or mandi prices. I\'m here to help you grow better! 🌾', 
-    time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) 
-  }
+  {
+    role: "ai",
+    text:
+      "Namaste! 🙏 I am <strong>Krishak</strong>, your AI farming assistant. " +
+      "Ask me anything about crops, soil health, pest management, weather, " +
+      "irrigation, fertilizers, government schemes, or mandi prices. 🌾",
+    time: new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    }),
+  },
 ];
+
 let chatHistory = [];
 
-// Global handler triggered when a farmer clicks any suggested question button
-window.handleQuestionClick = function(encodedText) {
+let recognition = null;
+let isListening = false;
+let lastInputWasVoice = false;
+let currentSpeech = null;
+
+
+// ============================================================
+// LANGUAGE CONFIGURATION
+// ============================================================
+
+const speechLanguageMap = {
+  en: "en-IN",
+  hi: "hi-IN",
+  mr: "mr-IN",
+  bn: "bn-IN",
+  pa: "pa-IN",
+  te: "te-IN",
+  gu: "gu-IN",
+};
+
+
+// ============================================================
+// SAFE HTML ESCAPE
+// ============================================================
+
+function escapeHTML(value) {
+  if (value === null || value === undefined) return "";
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+// ============================================================
+// REMOVE HTML FOR SPEECH
+// ============================================================
+
+function cleanTextForSpeech(text) {
+  if (!text) return "";
+
+  const temp = document.createElement("div");
+  temp.innerHTML = text;
+
+  let clean = temp.textContent || temp.innerText || "";
+
+  clean = clean
+    .replace(/---SUGGESTIONS---/gi, "")
+    .replace(/Suggested Questions:?/gi, "")
+    .replace(/\*\*/g, "")
+    .replace(/\n+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return clean;
+}
+
+
+// ============================================================
+// GET CURRENT LANGUAGE
+// ============================================================
+
+function getActiveLanguage() {
+  return localStorage.getItem("selectedLanguage") || "en";
+}
+
+
+// ============================================================
+// GET SPEECH LANGUAGE
+// ============================================================
+
+function getSpeechLanguage() {
+  const lang = getActiveLanguage();
+  return speechLanguageMap[lang] || "en-IN";
+}
+
+
+// ============================================================
+// NLP / INTENT DETECTION
+// ============================================================
+
+function detectFarmerIntent(text) {
+  const query = String(text || "").toLowerCase();
+
+  const intents = [
+    {
+      intent: "crop_health",
+      keywords: [
+        "crop health",
+        "plant health",
+        "crop problem",
+        "plant problem",
+        "leaf",
+        "leaves",
+        "yellow leaf",
+        "yellow leaves",
+        "wilting",
+        "crop disease",
+        "disease",
+        "फसल",
+        "पत्ता",
+        "पत्ते",
+        "रोग",
+        "फसल रोग",
+      ],
+    },
+
+    {
+      intent: "pest_disease",
+      keywords: [
+        "pest",
+        "insect",
+        "insects",
+        "bug",
+        "bugs",
+        "caterpillar",
+        "aphid",
+        "fungus",
+        "fungal",
+        "bacteria",
+        "borer",
+        "कीट",
+        "कीड़ा",
+        "कीड़े",
+        "फफूंद",
+        "बीमारी",
+      ],
+    },
+
+    {
+      intent: "weather",
+      keywords: [
+        "weather",
+        "rain",
+        "rainfall",
+        "temperature",
+        "forecast",
+        "humidity",
+        "storm",
+        "wind",
+        "बारिश",
+        "मौसम",
+        "तापमान",
+        "आर्द्रता",
+      ],
+    },
+
+    {
+      intent: "market",
+      keywords: [
+        "mandi",
+        "market price",
+        "market rate",
+        "price",
+        "rate",
+        "selling price",
+        "apmc",
+        "भाव",
+        "मंडी",
+        "कीमत",
+        "बाजार भाव",
+        "दाम",
+      ],
+    },
+
+    {
+      intent: "fertilizer",
+      keywords: [
+        "fertilizer",
+        "fertiliser",
+        "urea",
+        "npk",
+        "dap",
+        "potash",
+        "nutrient",
+        "fertilizer dose",
+        "खाद",
+        "उर्वरक",
+        "यूरिया",
+        "डीएपी",
+        "पोटाश",
+      ],
+    },
+
+    {
+      intent: "irrigation",
+      keywords: [
+        "irrigation",
+        "irrigate",
+        "water",
+        "watering",
+        "drip",
+        "sprinkler",
+        "water requirement",
+        "सिंचाई",
+        "पानी",
+        "पानी देना",
+      ],
+    },
+
+    {
+      intent: "soil",
+      keywords: [
+        "soil",
+        "soil health",
+        "soil test",
+        "soil testing",
+        "ph",
+        "nitrogen",
+        "phosphorus",
+        "potassium",
+        "मिट्टी",
+        "मृदा",
+        "मिट्टी जांच",
+      ],
+    },
+
+    {
+      intent: "government_scheme",
+      keywords: [
+        "scheme",
+        "government scheme",
+        "subsidy",
+        "government subsidy",
+        "loan",
+        "pm kisan",
+        "insurance",
+        "yojana",
+        "सरकारी योजना",
+        "सब्सिडी",
+        "योजना",
+        "पीएम किसान",
+        "ऋण",
+      ],
+    },
+
+    {
+      intent: "crop_management",
+      keywords: [
+        "sowing",
+        "harvesting",
+        "harvest",
+        "seed",
+        "seeds",
+        "spacing",
+        "growth",
+        "cultivation",
+        "farming method",
+        "बुवाई",
+        "कटाई",
+        "बीज",
+        "खेती",
+      ],
+    },
+  ];
+
+  for (const item of intents) {
+    const matched = item.keywords.some((keyword) =>
+      query.includes(keyword.toLowerCase())
+    );
+
+    if (matched) {
+      return item.intent;
+    }
+  }
+
+  return "general_agriculture";
+}
+
+
+// ============================================================
+// EXTRACT SIMPLE CROP ENTITY
+// ============================================================
+
+function detectCrop(text) {
+  const query = String(text || "").toLowerCase();
+
+  const crops = [
+    "wheat",
+    "rice",
+    "paddy",
+    "maize",
+    "corn",
+    "tomato",
+    "potato",
+    "onion",
+    "soybean",
+    "sugarcane",
+    "cotton",
+    "mustard",
+    "pea",
+    "chickpea",
+    "gram",
+    "groundnut",
+    "tur",
+    "pigeon pea",
+    "banana",
+    "mango",
+    "apple",
+  ];
+
+  return crops.find((crop) => query.includes(crop)) || null;
+}
+
+
+// ============================================================
+// QUESTION HANDLER
+// ============================================================
+
+window.handleQuestionClick = function (encodedText) {
   const query = decodeURIComponent(encodedText);
-  const input = document.getElementById('chat-input');
+
+  const input = document.getElementById("chat-input");
+
   if (input) {
     input.value = query;
     sendMessage();
   }
 };
 
+
+// ============================================================
+// RENDER AI ASSISTANT
+// ============================================================
+
 function renderAIAssistant() {
-  const activeLanguage = localStorage.getItem("selectedLanguage") || "en";
+  const activeLanguage = getActiveLanguage();
 
-  const t = (typeof translations !== 'undefined' && translations[activeLanguage]) 
-    ? translations[activeLanguage] 
-    : ((typeof translations !== 'undefined' && translations.en) ? translations.en : {
-        aiWelcome: "Namaste! 🙏 I am Krishak, your AI farming assistant. Ask me anything about crops, soil health, pest management, weather, or mandi prices. I'm here to help you grow better! 🌾",
-        aiAssistantTitle: "Krishi Sahayak AI",
-        aiOnline: "Online | Powered by AI",
-        chatPlaceholder: "Type your query or use voice...",
-        quickSupport: "Quick Support",
-        whatsappSupport: "WhatsApp Support",
-        immediateHelp: "Immediate help from our agents",
-        communityForums: "Community Forums",
-        connectFarmers: "Connect with other farmers",
-        expertContacts: "Expert Contacts",
-        soilScientists: "Soil scientists & agronomists",
-        featuredSpecialist: "FEATURED SPECIALIST",
-        expertName: "Dr. Sarah Verma",
-        pestControlExpert: "Pest Control Expert"
-      });
+  const t =
+    typeof translations !== "undefined" && translations[activeLanguage]
+      ? translations[activeLanguage]
+      : typeof translations !== "undefined" && translations.en
+      ? translations.en
+      : {
+          aiWelcome:
+            "Namaste! 🙏 I am Krishak, your AI farming assistant. Ask me anything about crops, soil health, pest management, weather, or mandi prices. I'm here to help you grow better! 🌾",
 
-  if (chatMessages.length === 1 && chatMessages[0].role === "ai" && t.aiWelcome) {
-    chatMessages[0].text = t.aiWelcome.replace("Krishak", "<strong>Krishak</strong>");
+          aiAssistantTitle: "Krishi Sahayak AI",
+
+          aiOnline: "Online | Powered by AI",
+
+          chatPlaceholder: "Type your query or use voice...",
+
+          quickSupport: "Quick Support",
+
+          whatsappSupport: "WhatsApp Support",
+
+          immediateHelp: "Immediate help from our agents",
+
+          communityForums: "Community Forums",
+
+          connectFarmers: "Connect with other farmers",
+
+          expertContacts: "Expert Contacts",
+
+          soilScientists: "Soil scientists & agronomists",
+
+          featuredSpecialist: "FEATURED SPECIALIST",
+
+          expertName: "Dr. Sarah Verma",
+
+          pestControlExpert: "Pest Control Expert",
+        };
+
+
+  // Update welcome message according to language
+  if (
+    chatMessages.length === 1 &&
+    chatMessages[0].role === "ai" &&
+    t.aiWelcome
+  ) {
+    chatMessages[0].text = t.aiWelcome.replace(
+      "Krishak",
+      "<strong>Krishak</strong>"
+    );
   }
 
-  const el = document.getElementById('page-ai-assistant');
-  if (!el) return;
-  
-  el.innerHTML = `
-  <div class="w-full">
-    <div class="flex flex-col md:flex-row h-[calc(100vh-64px)] w-full">
-      <!-- Main Chat Pane -->
-      <section class="flex-1 min-w-0 flex flex-col border-r border-stone-200 dark:border-stone-800 bg-white dark:bg-[#121613] shadow-sm overflow-hidden transition-colors">
-        
-        <!-- Header -->
-        <div class="px-6 py-4 border-b border-stone-100 dark:border-stone-800/80 bg-white dark:bg-[#161b17] flex items-center justify-between flex-shrink-0">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-[#2d5a27] dark:bg-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <span class="material-symbols-outlined text-white">smart_toy</span>
-            </div>
-            <div>
-              <h2 class="font-[Lexend] text-xl font-medium text-green-900 dark:text-emerald-300 leading-snug">
-                ${t.aiAssistantTitle || 'Krishi Sahayak AI'}
-              </h2>
-              <div class="flex items-center gap-1.5 mt-0.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <p class="text-xs text-stone-500 dark:text-stone-400">
-                  ${t.aiOnline || 'Online | Powered by AI'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Scrollable Messages Container -->
-        <div id="chat-area" class="flex-1 min-w-0 overflow-y-auto p-6 space-y-6 bg-stone-50/50 dark:bg-[#121613]"></div>
-        
-        <!-- Input Bar -->
-        <div class="p-4 border-t border-stone-100 dark:border-stone-800 bg-white dark:bg-[#161b17] flex-shrink-0">
-          <div id="chat-status" class="hidden text-xs text-stone-400 mb-2 px-2"></div>
-          <div class="flex items-center gap-3 bg-stone-50 dark:bg-[#1e241f] p-2 rounded-2xl border border-stone-200 dark:border-stone-700/70 shadow-sm focus-within:ring-2 focus-within:ring-[#2d5a27]/20 dark:focus-within:ring-emerald-500/30 transition-all">
-            <button type="button" class="p-2 text-stone-400 dark:text-stone-400 hover:text-[#154212] dark:hover:text-emerald-400 transition-colors">
-              <span class="material-symbols-outlined">add_circle</span>
-            </button>
-            <input 
-              id="chat-input" 
-              class="flex-1 border-none focus:ring-0 py-2 bg-transparent outline-none text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500" 
-              placeholder="${t.chatPlaceholder || 'Type your query...'}" 
-              type="text" 
-              onkeypress="if(event.key==='Enter')sendMessage()"
-            />
-            <div class="flex items-center gap-1">
-              <button onclick="toggleVoice()" id="voice-btn" type="button" class="p-2.5 rounded-xl bg-white dark:bg-[#252d27] text-stone-600 dark:text-stone-200 border border-stone-200 dark:border-stone-700 hover:bg-[#ffa536] hover:text-white transition-all active:scale-95">
-                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">mic</span>
-              </button>
-              <button onclick="sendMessage()" id="send-btn" type="button" class="p-2.5 rounded-xl bg-[#154212] dark:bg-emerald-600 text-white hover:bg-[#2d5a27] dark:hover:bg-emerald-500 transition-all active:scale-95 shadow-sm">
-                <span class="material-symbols-outlined">send</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Right Sidebar (Support & Specialists) -->
-      <section class="w-full md:w-80 lg:w-96 p-6 space-y-6 overflow-y-auto bg-stone-50/70 dark:bg-[#141915] hidden md:block flex-shrink-0 border-l border-stone-200 dark:border-stone-800">
-        <h3 class="font-[Lexend] text-xl font-medium text-green-900 dark:text-emerald-400 mb-4">
-          ${t.quickSupport || 'Quick Support'}
-        </h3>
-        <div class="space-y-4">
-          ${[
-            {icon:'chat', title: t.whatsappSupport || 'WhatsApp Support', desc: t.immediateHelp || 'Immediate help from our agents', color:'green', ext:true},
-            {icon:'groups', title: t.communityForums || 'Community Forums', desc: t.connectFarmers || 'Connect with other farmers', color:'amber'},
-            {icon:'person_search', title: t.expertContacts || 'Expert Contacts', desc: t.soilScientists || 'Soil scientists & agronomists', color:'blue'}
-          ].map(c => `
-            <a class="group block bg-white dark:bg-[#1c221e] p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-md hover:border-emerald-600/40 dark:hover:border-emerald-500/50 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-${c.color}-50 dark:bg-${c.color}-950/40 flex items-center justify-center text-${c.color}-600 dark:text-${c.color}-400 group-hover:bg-${c.color}-600 group-hover:text-white transition-colors">
-                  <span class="material-symbols-outlined">${c.icon}</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <h4 class="font-semibold text-sm text-green-950 dark:text-stone-100">${c.title}</h4>
-                  <p class="text-xs text-stone-500 dark:text-stone-400 truncate">${c.desc}</p>
-                </div>
-                <span class="material-symbols-outlined text-stone-400 dark:text-stone-500 group-hover:text-emerald-500 transition-colors">${c.ext?'open_in_new':'chevron_right'}</span>
-              </div>
-            </a>`).join('')}
-        </div>
 
-        <div class="bg-[#2d5a27] dark:bg-[#193a19] rounded-2xl p-5 text-white shadow-lg border border-emerald-700/30 overflow-hidden relative">
-          <div class="relative z-10">
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 dark:bg-emerald-950/60 backdrop-blur-md border border-white/20 dark:border-emerald-500/30 text-[10px] uppercase tracking-wider font-bold mb-4 text-emerald-100">
-              ${t.featuredSpecialist || 'FEATURED SPECIALIST'}
-            </div>
-            <div class="flex items-center gap-3 mb-4">
-              <img class="w-12 h-12 rounded-full border-2 border-white/20 dark:border-emerald-400/40 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsjNBqhjZMQvN2NwztMxZjS_kjvtiOydT2-8Hj9bhLfTZSr1g0pjsooCJaSmt2qJqCFeGSY5z_f210vPsv2p3ILbv8bJnCAx5vJWnphKwC8WbXSxkZyCjMayDns4Tq--N0pD9FbInVvTKZqI_uZPdtq1g66gmKdVXwBJNt7Q8NdU1MeRGeqf4gJzEMMrPz0esLKcU2yW1tveCQb0FetwdZOhHwH-NSyxIr8tegdL6S2AvFHUtA9EMqbvhY3hz5RKnUt13J7cLk2j0v" alt="Expert"/>
-              <div>
-                <h4 class="font-[Lexend] font-medium text-sm text-white">${t.expertName || 'Dr. Sarah Verma'}</h4>
-                <p class="text-xs text-white/80 dark:text-emerald-200">${t.pestControlExpert || 'Pest Control Expert'}</p>
+  const el = document.getElementById("page-ai-assistant");
+
+  if (!el) return;
+
+
+  el.innerHTML = `
+    <div class="w-full">
+
+      <div class="flex flex-col md:flex-row h-[calc(100vh-64px)] w-full">
+
+        <!-- ================================================= -->
+        <!-- MAIN CHAT -->
+        <!-- ================================================= -->
+
+        <section
+          class="flex-1 min-w-0 flex flex-col
+          border-r border-stone-200 dark:border-stone-800
+          bg-white dark:bg-[#121613]
+          shadow-sm overflow-hidden transition-colors"
+        >
+
+          <!-- HEADER -->
+
+          <div
+            class="px-6 py-4 border-b
+            border-stone-100 dark:border-stone-800/80
+            bg-white dark:bg-[#161b17]
+            flex items-center justify-between flex-shrink-0"
+          >
+
+            <div class="flex items-center gap-3">
+
+              <div
+                class="w-10 h-10 rounded-full
+                bg-[#2d5a27] dark:bg-emerald-600
+                flex items-center justify-center
+                flex-shrink-0 shadow-sm"
+              >
+                <span
+                  class="material-symbols-outlined text-white"
+                >
+                  smart_toy
+                </span>
               </div>
+
+              <div>
+
+                <h2
+                  class="font-[Lexend]
+                  text-xl font-medium
+                  text-green-900 dark:text-emerald-300
+                  leading-snug"
+                >
+                  ${escapeHTML(
+                    t.aiAssistantTitle || "Krishi Sahayak AI"
+                  )}
+                </h2>
+
+                <div class="flex items-center gap-1.5 mt-0.5">
+
+                  <span
+                    class="w-2 h-2 rounded-full
+                    bg-emerald-500 animate-pulse"
+                  ></span>
+
+                  <p
+                    class="text-xs
+                    text-stone-500 dark:text-stone-400"
+                  >
+                    ${escapeHTML(
+                      t.aiOnline || "Online | Powered by AI"
+                    )}
+                  </p>
+
+                </div>
+
+              </div>
+
             </div>
-            <button class="w-full py-2.5 bg-white dark:bg-emerald-500 text-[#154212] dark:text-stone-950 rounded-xl font-bold text-xs shadow-md active:scale-95 transition-all hover:bg-stone-100 dark:hover:bg-emerald-400">
-              Contact Specialist
-            </button>
+
           </div>
-          <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
-        </div>
-      </section>
+
+
+          <!-- CHAT AREA -->
+
+          <div
+            id="chat-area"
+            class="flex-1 min-w-0
+            overflow-y-auto p-6 space-y-6
+            bg-stone-50/50 dark:bg-[#121613]"
+          ></div>
+
+
+          <!-- INPUT -->
+
+          <div
+            class="p-4 border-t
+            border-stone-100 dark:border-stone-800
+            bg-white dark:bg-[#161b17]
+            flex-shrink-0"
+          >
+
+            <!-- STATUS -->
+
+            <div
+              id="chat-status"
+              class="hidden text-xs
+              text-stone-400 mb-2 px-2"
+            ></div>
+
+
+            <div
+              class="flex items-center gap-3
+              bg-stone-50 dark:bg-[#1e241f]
+              p-2 rounded-2xl
+              border border-stone-200
+              dark:border-stone-700/70
+              shadow-sm
+              focus-within:ring-2
+              focus-within:ring-[#2d5a27]/20
+              dark:focus-within:ring-emerald-500/30
+              transition-all"
+            >
+
+              <button
+                type="button"
+                class="p-2
+                text-stone-400
+                dark:text-stone-400
+                hover:text-[#154212]
+                dark:hover:text-emerald-400
+                transition-colors"
+              >
+                <span class="material-symbols-outlined">
+                  add_circle
+                </span>
+              </button>
+
+
+              <input
+                id="chat-input"
+                class="flex-1 border-none
+                focus:ring-0 py-2
+                bg-transparent outline-none
+                text-sm text-stone-800
+                dark:text-stone-100
+                placeholder-stone-400
+                dark:placeholder-stone-500"
+                placeholder="${escapeHTML(
+                  t.chatPlaceholder ||
+                    "Type your query or use voice..."
+                )}"
+                type="text"
+                autocomplete="off"
+              />
+
+
+              <div class="flex items-center gap-1">
+
+                <!-- VOICE BUTTON -->
+
+                <button
+                  onclick="toggleVoice()"
+                  id="voice-btn"
+                  type="button"
+                  title="Voice input"
+                  class="p-2.5 rounded-xl
+                  bg-white dark:bg-[#252d27]
+                  text-stone-600 dark:text-stone-200
+                  border border-stone-200
+                  dark:border-stone-700
+                  hover:bg-[#ffa536]
+                  hover:text-white
+                  transition-all active:scale-95"
+                >
+
+                  <span
+                    id="voice-icon"
+                    class="material-symbols-outlined"
+                    style="font-variation-settings:'FILL' 1;"
+                  >
+                    mic
+                  </span>
+
+                </button>
+
+
+                <!-- SEND BUTTON -->
+
+                <button
+                  onclick="sendMessage()"
+                  id="send-btn"
+                  type="button"
+                  title="Send"
+                  class="p-2.5 rounded-xl
+                  bg-[#154212]
+                  dark:bg-emerald-600
+                  text-white
+                  hover:bg-[#2d5a27]
+                  dark:hover:bg-emerald-500
+                  transition-all
+                  active:scale-95 shadow-sm"
+                >
+
+                  <span class="material-symbols-outlined">
+                    send
+                  </span>
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- RIGHT SUPPORT PANEL -->
+        <!-- ================================================= -->
+
+        <section
+          class="w-full md:w-80 lg:w-96
+          p-6 space-y-6
+          overflow-y-auto
+          bg-stone-50/70
+          dark:bg-[#141915]
+          hidden md:block
+          flex-shrink-0
+          border-l
+          border-stone-200
+          dark:border-stone-800"
+        >
+
+          <h3
+            class="font-[Lexend]
+            text-xl font-medium
+            text-green-900
+            dark:text-emerald-400 mb-4"
+          >
+            ${escapeHTML(t.quickSupport || "Quick Support")}
+          </h3>
+
+
+          <div class="space-y-4">
+
+            <!-- WhatsApp -->
+
+            <div
+              class="p-4 rounded-2xl
+              bg-white dark:bg-[#1a201c]
+              border border-stone-200
+              dark:border-stone-700
+              cursor-pointer
+              hover:shadow-md transition"
+            >
+
+              <div class="flex items-center gap-3">
+
+                <div
+                  class="w-10 h-10 rounded-xl
+                  bg-green-100
+                  dark:bg-green-900/30
+                  flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined text-green-600">
+                    chat
+                  </span>
+                </div>
+
+                <div>
+
+                  <h4
+                    class="font-semibold
+                    text-stone-800
+                    dark:text-stone-100"
+                  >
+                    ${escapeHTML(
+                      t.whatsappSupport || "WhatsApp Support"
+                    )}
+                  </h4>
+
+                  <p
+                    class="text-xs
+                    text-stone-500
+                    dark:text-stone-400"
+                  >
+                    ${escapeHTML(
+                      t.immediateHelp ||
+                        "Immediate help from our agents"
+                    )}
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Community -->
+
+            <div
+              class="p-4 rounded-2xl
+              bg-white dark:bg-[#1a201c]
+              border border-stone-200
+              dark:border-stone-700
+              cursor-pointer
+              hover:shadow-md transition"
+            >
+
+              <div class="flex items-center gap-3">
+
+                <div
+                  class="w-10 h-10 rounded-xl
+                  bg-amber-100
+                  dark:bg-amber-900/30
+                  flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined text-amber-600">
+                    groups
+                  </span>
+                </div>
+
+                <div>
+
+                  <h4
+                    class="font-semibold
+                    text-stone-800
+                    dark:text-stone-100"
+                  >
+                    ${escapeHTML(
+                      t.communityForums || "Community Forums"
+                    )}
+                  </h4>
+
+                  <p
+                    class="text-xs
+                    text-stone-500
+                    dark:text-stone-400"
+                  >
+                    ${escapeHTML(
+                      t.connectFarmers ||
+                        "Connect with other farmers"
+                    )}
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Experts -->
+
+            <div
+              class="p-4 rounded-2xl
+              bg-white dark:bg-[#1a201c]
+              border border-stone-200
+              dark:border-stone-700"
+            >
+
+              <div class="flex items-center gap-3">
+
+                <div
+                  class="w-10 h-10 rounded-xl
+                  bg-blue-100
+                  dark:bg-blue-900/30
+                  flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined text-blue-600">
+                    science
+                  </span>
+                </div>
+
+                <div>
+
+                  <h4
+                    class="font-semibold
+                    text-stone-800
+                    dark:text-stone-100"
+                  >
+                    ${escapeHTML(
+                      t.expertContacts || "Expert Contacts"
+                    )}
+                  </h4>
+
+                  <p
+                    class="text-xs
+                    text-stone-500
+                    dark:text-stone-400"
+                  >
+                    ${escapeHTML(
+                      t.soilScientists ||
+                        "Soil scientists & agronomists"
+                    )}
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
     </div>
-  </div>`;
+  `;
+
+
+  // ENTER KEY
+  const input = document.getElementById("chat-input");
+
+  if (input) {
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+
+
   renderAllMessages();
 }
 
-function renderAllMessages() {
-  const area = document.getElementById('chat-area');
-  if (!area) return;
-  
-  let html = chatMessages.map(m => m.role === 'ai' ? renderAIBubble(m) : renderUserBubble(m)).join('');
-  
-  if (chatMessages.length === 1) {
-    html += `
-    <div id="suggestion-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-      ${[
-        {q:'When should I harvest my wheat?', cat:'Crop Cycle'},
-        {q:'Best fertilizer for tomatoes?', cat:'Soil Health'},
-        {q:'How to identify pest attack on rice?', cat:'Pest Management'},
-        {q:'What is the current mandi price of soybean?', cat:'Market Info'}
-      ].map(s => `
-        <button onclick="sendSuggestion('${s.q}')" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-[#1a201c] hover:border-emerald-600/50 dark:hover:border-emerald-500/60 hover:bg-emerald-50/50 dark:hover:bg-[#222b25] transition-all group shadow-sm">
-          <p class="font-medium text-xs sm:text-sm text-stone-800 dark:text-stone-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-300">"${s.q}"</p>
-          <div class="flex items-center justify-between mt-2.5">
-            <span class="text-[11px] text-stone-500 dark:text-stone-400 font-medium">${s.cat}</span>
-            <span class="material-symbols-outlined text-stone-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" style="font-size:14px">arrow_forward</span>
-          </div>
-        </button>`).join('')}
-    </div>`;
-  }
-  area.innerHTML = html;
-  scrollChat();
-}
 
-function renderAIBubble(m) {
-  return `
-  <div class="flex gap-3 max-w-[88%] sm:max-w-[75%] items-start">
-    <div class="w-8 h-8 rounded-full bg-[#2d5a27]/10 dark:bg-emerald-950/60 flex-shrink-0 flex items-center justify-center mt-0.5 border border-emerald-800/20">
-      <span class="material-symbols-outlined text-[#154212] dark:text-emerald-400 text-sm">smart_toy</span>
-    </div>
-    <div class="bg-white dark:bg-[#1b221d] border border-stone-200/80 dark:border-stone-800 text-stone-800 dark:text-stone-100 p-4 rounded-2xl rounded-tl-none shadow-sm leading-relaxed text-sm break-words min-w-0">
-      <div>${m.text}</div>
-      <span class="text-[10px] text-stone-400 dark:text-stone-500 mt-2 block font-medium">${m.time}</span>
-    </div>
-  </div>`;
-}
+// ============================================================
+// GET APP CONTEXT
+// ============================================================
 
-function renderUserBubble(m) {
-  return `
-  <div class="flex gap-3 max-w-[88%] sm:max-w-[75%] ml-auto flex-row-reverse items-start">
-    <div class="w-8 h-8 rounded-full bg-[#2d5a27] dark:bg-emerald-600 flex-shrink-0 flex items-center justify-center mt-0.5 shadow-sm">
-      <span class="material-symbols-outlined text-white text-sm">person</span>
-    </div>
-    <div class="bg-[#2d5a27] dark:bg-[#1e4822] border border-emerald-800/40 text-white p-4 rounded-2xl rounded-tr-none shadow-sm leading-relaxed text-sm break-words min-w-0">
-      <div>${m.text}</div>
-      <span class="text-[10px] text-emerald-200/80 mt-2 block font-medium text-right">${m.time}</span>
-    </div>
-  </div>`;
-}
-
-function showTyping() {
-  const area = document.getElementById('chat-area');
-  if (!area || document.getElementById('typing-indicator')) return;
-  
-  const div = document.createElement('div');
-  div.id = 'typing-indicator';
-  div.className = 'flex gap-3 items-center';
-  div.innerHTML = `
-    <div class="w-8 h-8 rounded-full bg-[#2d5a27]/10 dark:bg-emerald-950/50 flex-shrink-0 flex items-center justify-center">
-      <span class="material-symbols-outlined text-[#154212] dark:text-emerald-400 text-sm">smart_toy</span>
-    </div>
-    <div class="flex items-center gap-1.5 p-3.5 bg-white dark:bg-[#1b221d] border border-stone-200 dark:border-stone-800 rounded-2xl rounded-tl-none shadow-sm">
-      <span class="w-2 h-2 rounded-full bg-[#2d5a27] dark:bg-emerald-400 animate-bounce"></span>
-      <span class="w-2 h-2 rounded-full bg-[#2d5a27] dark:bg-emerald-400 animate-bounce" style="animation-delay:0.2s"></span>
-      <span class="w-2 h-2 rounded-full bg-[#2d5a27] dark:bg-emerald-400 animate-bounce" style="animation-delay:0.4s"></span>
-    </div>
-  `;
-  area.appendChild(div);
-  scrollChat();
-}
-
-function removeTyping() {
-  const indicator = document.getElementById('typing-indicator');
-  if (indicator) indicator.remove();
-}
-
-// Extract dynamic location, weather, and mandi table rates from localStorage & active DOM
 function getAppContext() {
   const village = localStorage.getItem("village") || "";
   const district = localStorage.getItem("district") || "";
   const state = localStorage.getItem("state") || "";
 
-  let fullLocation = [village, district, state].filter(Boolean).join(", ");
-  
-  if (!fullLocation) {
-    const locationBadge = document.getElementById('dashboard-user-address') || document.getElementById('user-location');
-    if (locationBadge && locationBadge.innerText.trim()) {
-      fullLocation = locationBadge.innerText.trim();
-    } else {
-      fullLocation = "India";
-    }
-  }
+  const locationParts = [village, district, state].filter(Boolean);
 
-  // Extract Real Table Data from "Live Mandi Rates" table if available
-  let tableRates = [];
-  const tableRows = document.querySelectorAll('table tbody tr');
+  let location =
+    locationParts.length > 0
+      ? locationParts.join(", ")
+      : "India";
 
-  if (tableRows.length > 0) {
-    tableRows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      if (cells.length >= 4) {
-        const commodity = cells[0]?.innerText.replace(/\s+/g, ' ').trim();
-        const mandi = cells[1]?.innerText.replace(/\s+/g, ' ').trim();
-        const minRate = cells[2]?.innerText.trim();
-        const maxRate = cells[3]?.innerText.trim();
-        const modalRate = cells[4]?.innerText.trim() || cells[3]?.innerText.trim();
-        if (commodity && mandi) {
-          tableRates.push(`${commodity} in ${mandi}: Modal ₹${modalRate} (Min: ${minRate}, Max: ${maxRate})`);
-        }
+
+  // ----------------------------------------------------------
+  // MARKET DATA
+  // ----------------------------------------------------------
+
+  let availableMarketPrices = [];
+
+  try {
+    const marketRows = document.querySelectorAll(
+      "#market-table tbody tr, #mandi-table tbody tr"
+    );
+
+    marketRows.forEach((row) => {
+      const text = row.innerText?.trim();
+
+      if (text) {
+        availableMarketPrices.push(text);
       }
     });
+  } catch (error) {
+    console.warn("Market context error:", error);
   }
 
-  // Extract Weather Data directly from weather widget elements
-  const tempEl = document.getElementById('weather-temp') || document.getElementById('current-temp');
-  const descEl = document.getElementById('weather-desc') || document.getElementById('weather-condition');
-  const weatherData = tempEl 
-    ? `${tempEl.innerText.trim()} (${descEl ? descEl.innerText.trim() : 'Clear'})` 
-    : 'Normal conditions';
 
-  const availableMarketPrices = tableRates.length > 0 
-    ? tableRates.slice(0, 10).join(' | ') 
-    : "Wheat: ₹2,125/Q | Rice: ₹1,940/Q | Corn: ₹1,850/Q";
+  // IMPORTANT:
+  // Do NOT use fake hardcoded market prices.
+  if (availableMarketPrices.length === 0) {
+    availableMarketPrices = [
+      "No live mandi data is currently available in the dashboard.",
+    ];
+  }
+
+
+  // ----------------------------------------------------------
+  // WEATHER DATA
+  // ----------------------------------------------------------
+
+  let weather = "Current weather data is not available.";
+
+  try {
+    const temp =
+      document.getElementById("weather-temp")?.innerText ||
+      document.getElementById("current-temp")?.innerText ||
+      "";
+
+    const description =
+      document.getElementById("weather-description")?.innerText ||
+      document.getElementById("current-weather")?.innerText ||
+      "";
+
+    if (temp || description) {
+      weather = `${temp} ${description}`.trim();
+    }
+  } catch (error) {
+    console.warn("Weather context error:", error);
+  }
+
 
   return {
-    village: village,
-    district: district,
-    state: state,
-    location: fullLocation,
-    weather: weatherData,
-    availableMarketPrices: availableMarketPrices
+    location,
+    weather,
+    availableMarketPrices,
+    language: getActiveLanguage(),
   };
 }
 
-// Converts raw model output into clean text and interactive suggestion pills
-function formatAssistantReply(rawReply) {
-  let mainText = rawReply;
-  let rawSuggestions = [];
 
-  const splitRegex = /(?:---SUGGESTIONS---|(?:\*{0,3}|#{1,4}\s*)💡?\s*(?:Suggested Questions|Recommended Questions|सुझाव):?\*{0,3})/i;
+// ============================================================
+// FORMAT AI RESPONSE
+// ============================================================
 
-  if (splitRegex.test(rawReply)) {
-    const parts = rawReply.split(splitRegex);
-    mainText = parts[0].trim();
-    
-    const suggestionsBlock = parts.slice(1).join(' ');
-    rawSuggestions = suggestionsBlock
-      .split('\n')
-      .map(line => line.replace(/^[\s*\-–•\d.)\]"']+/g, '').replace(/["']+$/g, '').trim())
-      .filter(line => line.length > 5 && !line.toLowerCase().includes('suggested questions'));
+function formatAssistantReply(text) {
+  if (!text) return "";
+
+  let response = String(text);
+
+
+  // ----------------------------------------------------------
+  // Extract suggestions
+  // ----------------------------------------------------------
+
+  let suggestions = [];
+
+  const suggestionMatch = response.match(
+    /---SUGGESTIONS---([\s\S]*)/i
+  );
+
+  if (suggestionMatch) {
+    const suggestionText = suggestionMatch[1];
+
+    suggestions = suggestionText
+      .split("\n")
+      .map((line) =>
+        line
+          .replace(/^[-•*]\s*/, "")
+          .replace(/^\d+[\.\)]\s*/, "")
+          .trim()
+      )
+      .filter(Boolean);
+
+    response = response
+      .replace(/---SUGGESTIONS---[\s\S]*/i, "")
+      .trim();
   }
 
-  let suggestionsHtml = '';
-  if (rawSuggestions.length > 0) {
-    suggestionsHtml = `
-      <div class="mt-4 pt-3 border-t border-stone-200/70 dark:border-stone-800">
-        <p class="text-[11px] font-bold text-stone-500 dark:text-emerald-400/90 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-          <span>💡</span> Suggested Questions:
+
+  response = response.replace(
+    /Suggested Questions:?([\s\S]*)/i,
+    ""
+  );
+
+
+  // ----------------------------------------------------------
+  // Escape first
+  // ----------------------------------------------------------
+
+  response = escapeHTML(response);
+
+
+  // ----------------------------------------------------------
+  // Markdown-like formatting
+  // ----------------------------------------------------------
+
+  response = response.replace(
+    /\*\*(.*?)\*\*/g,
+    "<strong>$1</strong>"
+  );
+
+
+  response = response.replace(
+    /\n/g,
+    "<br>"
+  );
+
+
+  // ----------------------------------------------------------
+  // Suggestion buttons
+  // ----------------------------------------------------------
+
+  if (suggestions.length > 0) {
+
+    response += `
+      <div class="mt-4">
+        <p class="text-xs font-semibold text-stone-500 mb-2">
+          Suggested questions
         </p>
-        <div class="flex flex-col sm:flex-row flex-wrap gap-2">
-          ${rawSuggestions.map(q => {
-            const safeQ = encodeURIComponent(q);
-            return `
-              <button 
-                type="button" 
-                onclick="handleQuestionClick('${safeQ}')" 
-                class="text-left text-xs font-medium bg-emerald-50 hover:bg-[#2d5a27] text-emerald-900 hover:text-white dark:bg-[#202922] dark:hover:bg-emerald-600 dark:text-emerald-200 dark:hover:text-white border border-emerald-300/80 dark:border-emerald-700/50 rounded-xl px-3.5 py-2.5 transition-all duration-150 shadow-sm active:scale-95 flex items-center justify-between gap-2 cursor-pointer"
-              >
-                <span>${q}</span>
-                <span class="material-symbols-outlined text-xs" style="font-size:14px;">arrow_forward</span>
-              </button>
-            `;
-          }).join('')}
+
+        <div class="flex flex-wrap gap-2">
+
+          ${suggestions
+            .slice(0, 4)
+            .map(
+              (suggestion) => `
+                <button
+                  onclick="sendSuggestion(${JSON.stringify(
+                    suggestion
+                  ).replace(/</g, "\\u003c")})"
+                  class="text-xs px-3 py-2
+                  rounded-xl
+                  border border-green-200
+                  dark:border-green-800
+                  bg-green-50
+                  dark:bg-green-900/20
+                  text-green-800
+                  dark:text-green-300
+                  hover:bg-green-100
+                  dark:hover:bg-green-900/40
+                  transition"
+                >
+                  ${escapeHTML(suggestion)}
+                </button>
+              `
+            )
+            .join("")}
+
         </div>
       </div>
     `;
   }
 
-  const formattedMain = mainText
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>');
 
-  return formattedMain + suggestionsHtml;
+  return response;
 }
+
+
+// ============================================================
+// RENDER ALL MESSAGES
+// ============================================================
+
+function renderAllMessages() {
+  const area = document.getElementById("chat-area");
+
+  if (!area) return;
+
+
+  area.innerHTML = chatMessages
+    .map((message, index) => {
+
+      if (message.role === "user") {
+
+        return `
+          <div class="flex justify-end">
+
+            <div class="max-w-[85%]">
+
+              <div
+                class="px-4 py-3
+                rounded-2xl rounded-br-md
+                bg-[#154212]
+                dark:bg-emerald-700
+                text-white
+                text-sm shadow-sm"
+              >
+                ${escapeHTML(message.text)}
+              </div>
+
+              <div
+                class="text-[10px]
+                text-stone-400
+                text-right mt-1"
+              >
+                ${escapeHTML(message.time || "")}
+              </div>
+
+            </div>
+
+          </div>
+        `;
+      }
+
+
+      const plainSpeechText = cleanTextForSpeech(
+        message.text
+      );
+
+
+      return `
+        <div class="flex justify-start">
+
+          <div class="max-w-[90%]">
+
+            <div
+              class="px-4 py-3
+              rounded-2xl rounded-bl-md
+              bg-white
+              dark:bg-[#1b211d]
+              border border-stone-200
+              dark:border-stone-700
+              text-sm
+              text-stone-700
+              dark:text-stone-200
+              shadow-sm"
+            >
+
+              <div>
+                ${formatAssistantReply(message.text)}
+              </div>
+
+
+              <!-- SPEAK BUTTON -->
+
+              <div
+                class="mt-3 pt-2
+                border-t
+                border-stone-100
+                dark:border-stone-700
+                flex items-center gap-2"
+              >
+
+                <button
+                  onclick="speakAssistantText(${JSON.stringify(
+                    plainSpeechText
+                  ).replace(/</g, "\\u003c")})"
+                  title="Listen to answer"
+                  class="inline-flex
+                  items-center gap-1
+                  text-xs
+                  text-stone-500
+                  dark:text-stone-400
+                  hover:text-green-700
+                  dark:hover:text-emerald-400
+                  transition"
+                >
+
+                  <span class="material-symbols-outlined text-sm">
+                    volume_up
+                  </span>
+
+                  Listen
+
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="text-[10px]
+              text-stone-400
+              mt-1"
+            >
+              ${escapeHTML(message.time || "")}
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    })
+    .join("");
+
+
+  scrollChat();
+}
+
+
+// ============================================================
+// TYPING INDICATOR
+// ============================================================
+
+function showTyping() {
+  const area = document.getElementById("chat-area");
+
+  if (!area) return;
+
+
+  const typing = document.createElement("div");
+
+  typing.id = "typing-indicator";
+
+  typing.className = "flex justify-start";
+
+
+  typing.innerHTML = `
+    <div
+      class="px-4 py-3 rounded-2xl
+      bg-white dark:bg-[#1b211d]
+      border border-stone-200
+      dark:border-stone-700"
+    >
+
+      <div class="flex items-center gap-1">
+
+        <span
+          class="w-2 h-2 rounded-full
+          bg-stone-400 animate-bounce"
+        ></span>
+
+        <span
+          class="w-2 h-2 rounded-full
+          bg-stone-400 animate-bounce"
+          style="animation-delay:120ms"
+        ></span>
+
+        <span
+          class="w-2 h-2 rounded-full
+          bg-stone-400 animate-bounce"
+          style="animation-delay:240ms"
+        ></span>
+
+      </div>
+
+    </div>
+  `;
+
+
+  area.appendChild(typing);
+
+  scrollChat();
+}
+
+
+// ============================================================
+// REMOVE TYPING
+// ============================================================
+
+function removeTyping() {
+  document
+    .getElementById("typing-indicator")
+    ?.remove();
+}
+
+
+// ============================================================
+// CHAT STATUS
+// ============================================================
+
+function setChatStatus(message, show = true) {
+  const status = document.getElementById("chat-status");
+
+  if (!status) return;
+
+  if (!show) {
+    status.classList.add("hidden");
+    status.textContent = "";
+    return;
+  }
+
+  status.textContent = message;
+  status.classList.remove("hidden");
+}
+
+
+// ============================================================
+// SEND MESSAGE TO BACKEND
+// ============================================================
 
 async function sendFarmerMessage(userText) {
-  const context = getAppContext();
-  const messagePayload = [...chatHistory, { role: "user", content: userText }];
 
-  const payload = {
-    message: userText,
-    messages: messagePayload,
-    context: context
+  const context = getAppContext();
+
+  const intent = detectFarmerIntent(userText);
+
+  const crop = detectCrop(userText);
+
+
+  const enhancedContext = {
+    ...context,
+
+    intent,
+
+    crop,
+
+    voiceInput: lastInputWasVoice,
   };
 
-  // Try port 5000 first, fallback to port 3000 if not available
-  const portsToTry = ["5000", "3000"];
-  let responseData = null;
-  let requestSuccess = false;
 
-  for (const port of portsToTry) {
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+  const currentMessages = [
+    ...chatHistory,
+    {
+      role: "user",
+      content: userText,
+    },
+  ];
 
-      if (response.ok) {
-        responseData = await response.json();
-        requestSuccess = true;
-        break;
-      }
-    } catch (e) {
-      // Continue to next port attempt
+
+  const response = await fetch("/api/chat", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      message: userText,
+
+      messages: currentMessages,
+
+      context: enhancedContext,
+    }),
+  });
+
+
+  if (!response.ok) {
+    throw new Error(
+      `Backend returned ${response.status}`
+    );
+  }
+
+
+  const responseData = await response.json();
+
+
+  const reply =
+    responseData.reply ||
+    responseData.response ||
+    responseData.message;
+
+
+  if (!reply) {
+    throw new Error(
+      "No AI response received from backend."
+    );
+  }
+
+
+  chatHistory.push(
+    {
+      role: "user",
+      content: userText,
+    },
+    {
+      role: "assistant",
+      content: reply,
     }
+  );
+
+
+  // Keep history manageable
+  if (chatHistory.length > 20) {
+    chatHistory =
+      chatHistory.slice(-20);
   }
 
-  if (requestSuccess && responseData && (responseData.reply || responseData.response)) {
-    const rawReply = responseData.reply || responseData.response;
-    chatHistory.push({ role: "user", content: userText });
-    chatHistory.push({ role: "assistant", content: rawReply });
-    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
-    return formatAssistantReply(rawReply);
-  }
-
-  return getFallbackResponse(userText);
+  return reply;
 }
+
+
+// ============================================================
+// FALLBACK RESPONSE
+// ============================================================
 
 function getFallbackResponse(text) {
-  const t = text.toLowerCase();
-  const responses = {
-    'wheat': '🌾 For wheat harvesting, the ideal time is when grain moisture content drops to 12-14%. Check if the stalk has turned golden brown.',
-    'fertilizer': '🧪 For tomatoes, use balanced NPK (10-10-10) during early growth, then switch to high-potassium (5-10-15) during fruiting.',
-    'yellow': '🍂 Yellow leaf edges in rice could indicate: 1) Potassium deficiency 2) Bacterial leaf blight 3) Iron deficiency. Check leaf undersides for pests.',
-    'pest': '🐛 Common signs of pest attack: holes in leaves, wilting, discoloration, sticky residue. Neem oil spray (5ml per liter) works effectively for many sucking pests.',
-    'price': '📊 Live market rates: Wheat is around ₹2,125/quintal, Rice around ₹1,940/quintal, and Corn around ₹1,850/quintal.',
-    'mandi': '📊 Check our Market Trends tab for live APMC rates near your registered district!'
-  };
-  const key = Object.keys(responses).find(k => t.includes(k));
-  return key ? responses [key] : '🌱 I am having trouble reaching the server right now. Please ensure your backend server is running (`node server.js`).';
+
+  const query = String(text || "").toLowerCase();
+
+
+  if (
+    query.includes("weather") ||
+    query.includes("rain") ||
+    query.includes("बारिश") ||
+    query.includes("मौसम")
+  ) {
+    return (
+      "🌦️ I could not connect to the AI service right now. " +
+      "Please check the Weather section for the latest forecast."
+    );
+  }
+
+
+  if (
+    query.includes("mandi") ||
+    query.includes("market") ||
+    query.includes("price") ||
+    query.includes("भाव") ||
+    query.includes("मंडी")
+  ) {
+    return (
+      "📊 I could not retrieve the AI response. " +
+      "Please open Market Trends to view the available live mandi data."
+    );
+  }
+
+
+  if (
+    query.includes("fertilizer") ||
+    query.includes("urea") ||
+    query.includes("npk") ||
+    query.includes("खाद") ||
+    query.includes("उर्वरक")
+  ) {
+    return (
+      "🌱 Please provide your crop name, crop stage, soil condition, " +
+      "and the fertilizer you currently have. I can then provide more relevant guidance."
+    );
+  }
+
+
+  if (
+    query.includes("pest") ||
+    query.includes("insect") ||
+    query.includes("कीट") ||
+    query.includes("कीड़ा")
+  ) {
+    return (
+      "🐛 Please describe the pest symptoms or upload a crop image " +
+      "so the Crop Health feature can help identify the problem."
+    );
+  }
+
+
+  return (
+    "🌱 I am having trouble connecting to Krishak AI right now. " +
+    "Please check that your backend server is running and try again."
+  );
 }
+
+
+// ============================================================
+// SEND MESSAGE
+// ============================================================
 
 async function sendMessage() {
-  const input = document.getElementById('chat-input');
+
+  const input =
+    document.getElementById("chat-input");
+
+
   if (!input) return;
-  const text = input.value.trim();
+
+
+  const text =
+    input.value.trim();
+
+
   if (!text) return;
 
-  const now = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  chatMessages.push({ role: 'user', text, time: now });
-  input.value = '';
-  input.disabled = true;
-  
-  const sendBtn = document.getElementById('send-btn');
-  if (sendBtn) sendBtn.disabled = true;
 
-  document.getElementById('suggestion-cards')?.remove();
+  // Stop speech when sending another question
+  stopAssistantSpeech();
+
+
+  const now =
+    new Date().toLocaleTimeString(
+      "en-US",
+      {
+        hour: "numeric",
+        minute: "2-digit",
+      }
+    );
+
+
+  chatMessages.push({
+    role: "user",
+    text,
+    time: now,
+  });
+
+
+  input.value = "";
+
+  input.disabled = true;
+
+
+  const sendBtn =
+    document.getElementById("send-btn");
+
+
+  if (sendBtn) {
+    sendBtn.disabled = true;
+  }
+
+
+  document
+    .getElementById("suggestion-cards")
+    ?.remove();
+
+
   renderAllMessages();
+
   showTyping();
 
+
   try {
-    const aiResponse = await sendFarmerMessage(text);
-    chatMessages.push({ 
-      role: 'ai', 
-      text: aiResponse, 
-      time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) 
+
+    let aiResponse;
+
+    try {
+
+      aiResponse =
+        await sendFarmerMessage(text);
+
+    } catch (backendError) {
+
+      console.error(
+        "Backend error:",
+        backendError
+      );
+
+      aiResponse =
+        getFallbackResponse(text);
+    }
+
+
+    chatMessages.push({
+
+      role: "ai",
+
+      text: aiResponse,
+
+      time:
+        new Date().toLocaleTimeString(
+          "en-US",
+          {
+            hour: "numeric",
+            minute: "2-digit",
+          }
+        ),
+
     });
-  } catch (err) {
-    console.error("UI Error in sendMessage:", err);
-    chatMessages.push({ 
-      role: 'ai', 
-      text: "Something went wrong while connecting to the assistant. Please try again.", 
-      time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) 
+
+
+    // Automatically speak voice questions
+    if (lastInputWasVoice) {
+
+      setTimeout(() => {
+
+        speakAssistantText(
+          cleanTextForSpeech(aiResponse)
+        );
+
+      }, 250);
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "UI Error in sendMessage:",
+      error
+    );
+
+
+    chatMessages.push({
+
+      role: "ai",
+
+      text:
+        "Something went wrong while connecting to Krishak AI. Please try again.",
+
+      time:
+        new Date().toLocaleTimeString(
+          "en-US",
+          {
+            hour: "numeric",
+            minute: "2-digit",
+          }
+        ),
+
     });
+
   } finally {
+
+    lastInputWasVoice = false;
+
     removeTyping();
+
     renderAllMessages();
+
     input.disabled = false;
-    if (sendBtn) sendBtn.disabled = false;
+
+    if (sendBtn) {
+      sendBtn.disabled = false;
+    }
+
     input.focus();
+
   }
 }
+
+
+// ============================================================
+// SEND SUGGESTION
+// ============================================================
 
 function sendSuggestion(text) {
-  const input = document.getElementById('chat-input');
-  if (input) {
-    input.value = text;
-    sendMessage();
-  }
+
+  const input =
+    document.getElementById("chat-input");
+
+
+  if (!input) return;
+
+
+  input.value = text;
+
+  sendMessage();
 }
 
+
+// ============================================================
+// SCROLL CHAT
+// ============================================================
+
 function scrollChat() {
+
   setTimeout(() => {
-    const area = document.getElementById('chat-area');
-    if (area) area.scrollTop = area.scrollHeight;
+
+    const area =
+      document.getElementById("chat-area");
+
+
+    if (area) {
+
+      area.scrollTop =
+        area.scrollHeight;
+
+    }
+
   }, 100);
 }
 
+
+// ============================================================
+// VOICE INPUT
+// ============================================================
+
 function toggleVoice() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('Voice input is not supported in this browser. Try Chrome or Edge.');
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+  if (!SpeechRecognition) {
+
+    alert(
+      "Voice input is not supported in this browser. Please use Google Chrome or Microsoft Edge."
+    );
+
     return;
   }
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-  
-  const activeLang = localStorage.getItem("selectedLanguage") || "en";
-  const langMap = {
-    hi: 'hi-IN',
-    mr: 'mr-IN',
-    pa: 'pa-IN',
-    te: 'te-IN',
-    gu: 'gu-IN',
-    en: 'en-IN'
-  };
-  recognition.lang = langMap[activeLang] || 'en-IN';
-  recognition.interimResults = false;
 
-  const btn = document.getElementById('voice-btn');
-  if (btn) {
-    btn.classList.add('!bg-red-500', '!text-white');
+
+  // Stop if already listening
+  if (isListening) {
+
+    stopVoiceRecognition();
+
+    return;
   }
 
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    const input = document.getElementById('chat-input');
-    if (input) input.value = transcript;
-    if (btn) {
-      btn.classList.remove('!bg-red-500', '!text-white');
-    }
-    sendMessage();
-  };
-  
-  recognition.onerror = () => {
-    if (btn) btn.classList.remove('!bg-red-500', '!text-white');
-  };
-  recognition.onend = () => {
-    if (btn) btn.classList.remove('!bg-red-500', '!text-white');
-  };
-  recognition.start();
+
+  recognition =
+    new SpeechRecognition();
+
+
+  recognition.lang =
+    getSpeechLanguage();
+
+
+  // Get partial/interim results
+  recognition.interimResults =
+    true;
+
+
+  recognition.continuous =
+    false;
+
+
+  recognition.maxAlternatives =
+    1;
+
+
+  const btn =
+    document.getElementById("voice-btn");
+
+
+  const icon =
+    document.getElementById("voice-icon");
+
+
+  isListening = true;
+
+
+  if (btn) {
+
+    btn.classList.add(
+      "!bg-red-500",
+      "!text-white",
+      "scale-105"
+    );
+
+  }
+
+
+  if (icon) {
+
+    icon.textContent =
+      "mic_off";
+
+  }
+
+
+  setChatStatus(
+    `Listening in ${getSpeechLanguage()}... Speak now.`,
+    true
+  );
+
+
+  recognition.onstart =
+    function () {
+
+      console.log(
+        "🎤 Voice recognition started:",
+        getSpeechLanguage()
+      );
+
+    };
+
+
+  recognition.onresult =
+    function (event) {
+
+      let finalTranscript =
+        "";
+
+      let interimTranscript =
+        "";
+
+
+      for (
+        let i = event.resultIndex;
+        i < event.results.length;
+        i++
+      ) {
+
+        const transcript =
+          event.results[i][0].transcript;
+
+
+        if (
+          event.results[i].isFinal
+        ) {
+
+          finalTranscript +=
+            transcript;
+
+        } else {
+
+          interimTranscript +=
+            transcript;
+
+        }
+
+      }
+
+
+      const input =
+        document.getElementById(
+          "chat-input"
+        );
+
+
+      if (input) {
+
+        input.value =
+          (
+            finalTranscript ||
+            interimTranscript
+          ).trim();
+
+      }
+
+
+      if (finalTranscript.trim()) {
+
+        lastInputWasVoice =
+          true;
+
+      }
+
+    };
+
+
+  recognition.onerror =
+    function (event) {
+
+      console.error(
+        "Speech recognition error:",
+        event.error
+      );
+
+
+      const errorMessages = {
+
+        "not-allowed":
+          "Microphone permission was denied. Please allow microphone access.",
+
+        "audio-capture":
+          "No microphone was detected.",
+
+        "no-speech":
+          "No speech was detected. Please try again.",
+
+        "network":
+          "Voice recognition network error. Please check your internet connection.",
+
+        "aborted":
+          "Voice recognition stopped.",
+
+      };
+
+
+      setChatStatus(
+        errorMessages[event.error] ||
+          "Unable to recognize your voice. Please try again.",
+        true
+      );
+
+    };
+
+
+  recognition.onend =
+    function () {
+
+      const input =
+        document.getElementById(
+          "chat-input"
+        );
+
+
+      const transcript =
+        input?.value.trim() || "";
+
+
+      isListening =
+        false;
+
+
+      if (btn) {
+
+        btn.classList.remove(
+          "!bg-red-500",
+          "!text-white",
+          "scale-105"
+        );
+
+      }
+
+
+      if (icon) {
+
+        icon.textContent =
+          "mic";
+
+      }
+
+
+      setChatStatus(
+        "",
+        false
+      );
+
+
+      // Automatically send voice query
+      if (
+        transcript &&
+        lastInputWasVoice
+      ) {
+
+        sendMessage();
+
+      }
+
+    };
+
+
+  try {
+
+    recognition.start();
+
+  } catch (error) {
+
+    console.error(
+      "Unable to start recognition:",
+      error
+    );
+
+    isListening =
+      false;
+
+  }
+
 }
 
-window.renderAIAssistant = renderAIAssistant;
-window.sendMessage = sendMessage;
-window.sendSuggestion = sendSuggestion;
-window.toggleVoice = toggleVoice;
+
+// ============================================================
+// STOP VOICE RECOGNITION
+// ============================================================
+
+function stopVoiceRecognition() {
+
+  if (recognition) {
+
+    try {
+
+      recognition.stop();
+
+    } catch (error) {
+
+      console.warn(
+        "Recognition stop error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  isListening =
+    false;
+
+
+  const btn =
+    document.getElementById(
+      "voice-btn"
+    );
+
+
+  const icon =
+    document.getElementById(
+      "voice-icon"
+    );
+
+
+  if (btn) {
+
+    btn.classList.remove(
+      "!bg-red-500",
+      "!text-white",
+      "scale-105"
+    );
+
+  }
+
+
+  if (icon) {
+
+    icon.textContent =
+      "mic";
+
+  }
+
+
+  setChatStatus(
+    "",
+    false
+  );
+
+}
+
+
+// ============================================================
+// TEXT TO SPEECH
+// ============================================================
+
+function speakAssistantText(text) {
+
+  if (
+    !("speechSynthesis" in window)
+  ) {
+
+    alert(
+      "Voice output is not supported in this browser."
+    );
+
+    return;
+
+  }
+
+
+  const cleanText =
+    cleanTextForSpeech(text);
+
+
+  if (!cleanText) return;
+
+
+  // Stop previous speech
+  window.speechSynthesis.cancel();
+
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      cleanText
+    );
+
+
+  utterance.lang =
+    getSpeechLanguage();
+
+
+  utterance.rate =
+    0.95;
+
+
+  utterance.pitch =
+    1;
+
+
+  utterance.volume =
+    1;
+
+
+  // Try to select matching voice
+  const voices =
+    window.speechSynthesis.getVoices();
+
+
+  const matchingVoice =
+    voices.find(
+      (voice) =>
+        voice.lang
+          ?.toLowerCase()
+          .startsWith(
+            getSpeechLanguage()
+              .toLowerCase()
+              .split("-")[0]
+          )
+    );
+
+
+  if (matchingVoice) {
+
+    utterance.voice =
+      matchingVoice;
+
+  }
+
+
+  currentSpeech =
+    utterance;
+
+
+  utterance.onstart =
+    function () {
+
+      setChatStatus(
+        "🔊 Krishak is speaking...",
+        true
+      );
+
+    };
+
+
+  utterance.onend =
+    function () {
+
+      setChatStatus(
+        "",
+        false
+      );
+
+      currentSpeech =
+        null;
+
+    };
+
+
+  utterance.onerror =
+    function () {
+
+      setChatStatus(
+        "",
+        false
+      );
+
+      currentSpeech =
+        null;
+
+    };
+
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+
+}
+
+
+// ============================================================
+// STOP AI SPEECH
+// ============================================================
+
+function stopAssistantSpeech() {
+
+  if (
+    "speechSynthesis" in window
+  ) {
+
+    window.speechSynthesis.cancel();
+
+  }
+
+
+  currentSpeech =
+    null;
+
+
+  setChatStatus(
+    "",
+    false
+  );
+
+}
+
+
+// ============================================================
+// PRELOAD VOICES
+// ============================================================
+
+if (
+  "speechSynthesis" in window
+) {
+
+  window.speechSynthesis.onvoiceschanged =
+    function () {
+
+      window.speechSynthesis.getVoices();
+
+    };
+
+}
+
+
+// ============================================================
+// EXPORT FUNCTIONS
+// ============================================================
+
+window.renderAIAssistant =
+  renderAIAssistant;
+
+window.sendMessage =
+  sendMessage;
+
+window.sendSuggestion =
+  sendSuggestion;
+
+window.toggleVoice =
+  toggleVoice;
+
+window.stopVoiceRecognition =
+  stopVoiceRecognition;
+
+window.speakAssistantText =
+  speakAssistantText;
+
+window.stopAssistantSpeech =
+  stopAssistantSpeech;
+
+window.detectFarmerIntent =
+  detectFarmerIntent;
+
+window.detectCrop =
+  detectCrop;
