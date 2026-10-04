@@ -31,10 +31,12 @@ function renderFarmAnalyzer() {
                 </p>
             </div>
 
-            <div class="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-xl text-sm font-semibold">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                Demo Monitoring
-            </div>
+            
+<div class="flex items-center gap-2 bg-[#2d5a27] text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm">
+    <span class="w-2 h-2 rounded-full animate-pulse"
+style="background-color: #ffffff !important;"></span>
+    Demo Monitoring
+</div>
         </div>
 
 
