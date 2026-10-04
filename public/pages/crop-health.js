@@ -522,10 +522,13 @@ async function handleImageUpload(event) {
                 // --------------------------------------
                 // SEND REAL IMAGE TO BACKEND
                 // --------------------------------------
+                // app.post("/api/crop-diagnosis", async (req, res) => {
+                  // "http://127.0.0.1:5000/api/crop-diagnosis",
+
 
                 const response =
                     await fetch(
-                        "http://127.0.0.1:5000/api/crop-diagnosis",
+                        "/api/crop-diagnosis",
                         {
                             method: "POST",
 
