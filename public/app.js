@@ -422,6 +422,22 @@ function navigateTo(page) {
     }
 
 
+    // --------------------------------------
+    // Farm Analyzer
+    // --------------------------------------
+
+    if (
+        page === "farm-analyzer" &&
+        typeof renderFarmAnalyzer === "function"
+    ) {
+
+        console.log("🌱 Opening Farm Analyzer...");
+
+        renderFarmAnalyzer();
+
+        console.log("✅ Farm Analyzer rendered");
+
+    }
 
     // ======================================
     // HIDE ALL PAGES
@@ -1048,37 +1064,37 @@ window.logout =
 window.logoutUser =
     logout;
 
-    // ==========================================
+// ==========================================
 // 🌓 DARK / LIGHT MODE CONTROLLER
 // ==========================================
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
 
-  if (isDark) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
+    if (isDark) {
+        document.documentElement.classList.add("dark");
+    } else {
+        document.documentElement.classList.remove("dark");
+    }
 
-  updateThemeIcon(isDark);
+    updateThemeIcon(isDark);
 }
 
 function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle("dark");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  updateThemeIcon(isDark);
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    updateThemeIcon(isDark);
 }
 
 function updateThemeIcon(isDark) {
-  const icon = document.getElementById("theme-toggle-icon");
-  if (icon) {
-    icon.textContent = isDark ? "light_mode" : "dark_mode";
-    icon.classList.toggle("text-yellow-400", isDark);
-    icon.classList.toggle("text-stone-600", !isDark);
-  }
+    const icon = document.getElementById("theme-toggle-icon");
+    if (icon) {
+        icon.textContent = isDark ? "light_mode" : "dark_mode";
+        icon.classList.toggle("text-yellow-400", isDark);
+        icon.classList.toggle("text-stone-600", !isDark);
+    }
 }
 
 // Attach to startup
@@ -1087,45 +1103,45 @@ document.addEventListener("DOMContentLoaded", initTheme);
 
 
 function loginAsDemoUser() {
-  // Pre-seed local storage with an active farmer profile
-  localStorage.setItem("userName", "Evaluator Guest");
-  localStorage.setItem("phone", "9876543210");
-  localStorage.setItem("village", "Babina");
-  localStorage.setItem("district", "Jhansi");
-  localStorage.setItem("state", "Uttar Pradesh");
-  localStorage.setItem("crops", "Wheat, Mustard, Gram");
-  localStorage.setItem("loginMethod", "demo");
+    // Pre-seed local storage with an active farmer profile
+    localStorage.setItem("userName", "Evaluator Guest");
+    localStorage.setItem("phone", "9876543210");
+    localStorage.setItem("village", "Babina");
+    localStorage.setItem("district", "Jhansi");
+    localStorage.setItem("state", "Uttar Pradesh");
+    localStorage.setItem("crops", "Wheat, Mustard, Gram");
+    localStorage.setItem("loginMethod", "demo");
 
-  // Show app layout and jump straight to the dashboard
-  if (typeof showAppNavigation === "function") showAppNavigation();
-  if (typeof updateAppHeader === "function") updateAppHeader();
-  if (typeof navigateTo === "function") navigateTo("dashboard");
+    // Show app layout and jump straight to the dashboard
+    if (typeof showAppNavigation === "function") showAppNavigation();
+    if (typeof updateAppHeader === "function") updateAppHeader();
+    if (typeof navigateTo === "function") navigateTo("dashboard");
 }
 // Function to notify Flutter wrapper safely
 function notifyFlutterTheme(isDark) {
-  if (window.ThemeChannel && typeof window.ThemeChannel.postMessage === "function") {
-    window.ThemeChannel.postMessage(isDark ? "dark" : "light");
-  }
+    if (window.ThemeChannel && typeof window.ThemeChannel.postMessage === "function") {
+        window.ThemeChannel.postMessage(isDark ? "dark" : "light");
+    }
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
 
-  if (isDark) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
+    if (isDark) {
+        document.documentElement.classList.add("dark");
+    } else {
+        document.documentElement.classList.remove("dark");
+    }
 
-  updateThemeIcon(isDark);
-  notifyFlutterTheme(isDark);
+    updateThemeIcon(isDark);
+    notifyFlutterTheme(isDark);
 }
 
 function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle("dark");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  updateThemeIcon(isDark);
-  notifyFlutterTheme(isDark); // Triggers instant status bar update in Flutter app
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    updateThemeIcon(isDark);
+    notifyFlutterTheme(isDark); // Triggers instant status bar update in Flutter app
 }
