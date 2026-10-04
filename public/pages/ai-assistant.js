@@ -357,29 +357,36 @@ async function sendFarmerMessage(userText) {
 
   for (const port of portsToTry) {
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(stringify({
-        messages: messages,
-        context: {
-            location: farmerLocation,
-            weather: currentWeather,
-            availableMarketPrices: marketData,
-            language: selectedLanguage
-           }
-    }))
-      });
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                messages: messages,
+                context: {
+                    location: farmerLocation,
+                    weather: currentWeather,
+                    availableMarketPrices: marketData,
+                    language: selectedLanguage
+                }
+            })
+        });
 
-      if (response.ok) {
-        responseData = await response.json();
-        requestSuccess = true;
-        break;
-      }
-    } catch (e) {
-      // Continue to next port attempt
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "AI Assistant request failed"
+            );
+        }
+
+        // continue your existing response handling here
+
+    } catch (error) {
+        console.error("AI Assistant error:", error);
     }
-  }
+}
 
   if (requestSuccess && responseData && (responseData.reply || responseData.response)) {
     const rawReply = responseData.reply || responseData.response;
