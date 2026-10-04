@@ -43,11 +43,11 @@ function renderAIAssistant() {
 
   const t =
     typeof translations !== "undefined" &&
-    translations[activeLanguage]
+      translations[activeLanguage]
       ? translations[activeLanguage]
       : typeof translations !== "undefined" && translations.en
-      ? translations.en
-      : {
+        ? translations.en
+        : {
           aiWelcome:
             "Namaste! 🙏 I am Krishak, your AI farming assistant. Ask me anything about crops, soil health, pest management, weather, or mandi prices. I'm here to help you grow better! 🌾",
 
@@ -235,9 +235,8 @@ function renderAIAssistant() {
                 py-2 bg-transparent outline-none
                 text-sm text-stone-800 dark:text-stone-100
                 placeholder-stone-400 dark:placeholder-stone-500"
-                placeholder="${
-                  t.chatPlaceholder || "Type your query..."
-                }"
+                placeholder="${t.chatPlaceholder || "Type your query..."
+    }"
                 type="text"
                 onkeypress="if(event.key==='Enter') sendMessage()"
               />
@@ -326,43 +325,42 @@ function renderAIAssistant() {
 
           <div class="space-y-4">
 
-            ${
-              [
-                {
-                  icon: "chat",
-                  title:
-                    t.whatsappSupport ||
-                    "WhatsApp Support",
-                  desc:
-                    t.immediateHelp ||
-                    "Immediate help from our agents",
-                  color: "green",
-                },
+            ${[
+      {
+        icon: "chat",
+        title:
+          t.whatsappSupport ||
+          "WhatsApp Support",
+        desc:
+          t.immediateHelp ||
+          "Immediate help from our agents",
+        color: "green",
+      },
 
-                {
-                  icon: "groups",
-                  title:
-                    t.communityForums ||
-                    "Community Forums",
-                  desc:
-                    t.connectFarmers ||
-                    "Connect with other farmers",
-                  color: "amber",
-                },
+      {
+        icon: "groups",
+        title:
+          t.communityForums ||
+          "Community Forums",
+        desc:
+          t.connectFarmers ||
+          "Connect with other farmers",
+        color: "amber",
+      },
 
-                {
-                  icon: "person_search",
-                  title:
-                    t.expertContacts ||
-                    "Expert Contacts",
-                  desc:
-                    t.soilScientists ||
-                    "Soil scientists & agronomists",
-                  color: "blue",
-                },
-              ]
-                .map(
-                  (c) => `
+      {
+        icon: "person_search",
+        title:
+          t.expertContacts ||
+          "Expert Contacts",
+        desc:
+          t.soilScientists ||
+          "Soil scientists & agronomists",
+        color: "blue",
+      },
+    ]
+      .map(
+        (c) => `
                     <a
                       class="group block
                       bg-white dark:bg-[#1c221e]
@@ -432,9 +430,9 @@ function renderAIAssistant() {
 
                     </a>
                   `
-                )
-                .join("")
-            }
+      )
+      .join("")
+    }
 
           </div>
 
@@ -501,10 +499,9 @@ function renderAIAssistant() {
                     text-white/80
                     dark:text-emerald-200"
                   >
-                    ${
-                      t.pestControlExpert ||
-                      "Pest Control Expert"
-                    }
+                    ${t.pestControlExpert ||
+    "Pest Control Expert"
+    }
                   </p>
 
                 </div>
@@ -582,29 +579,29 @@ function renderAllMessages() {
       >
 
         ${[
-          {
-            q: "When should I harvest my wheat?",
-            cat: "Crop Cycle",
-          },
+        {
+          q: "When should I harvest my wheat?",
+          cat: "Crop Cycle",
+        },
 
-          {
-            q: "Best fertilizer for tomatoes?",
-            cat: "Soil Health",
-          },
+        {
+          q: "Best fertilizer for tomatoes?",
+          cat: "Soil Health",
+        },
 
-          {
-            q: "How to identify pest attack on rice?",
-            cat: "Pest Management",
-          },
+        {
+          q: "How to identify pest attack on rice?",
+          cat: "Pest Management",
+        },
 
-          {
-            q:
-              "What is the current mandi price of soybean?",
-            cat: "Market Info",
-          },
-        ]
-          .map(
-            (s) => `
+        {
+          q:
+            "What is the current mandi price of soybean?",
+          cat: "Market Info",
+        },
+      ]
+        .map(
+          (s) => `
               <button
                 onclick="sendSuggestion('${s.q}')"
                 class="text-left
@@ -660,8 +657,8 @@ function renderAllMessages() {
 
               </button>
             `
-          )
-          .join("")}
+        )
+        .join("")}
 
       </div>
     `;
@@ -1035,11 +1032,10 @@ function getAppContext() {
 
 
   const weatherData = tempEl
-    ? `${tempEl.innerText.trim()} (${
-        descEl
-          ? descEl.innerText.trim()
-          : "Clear"
-      })`
+    ? `${tempEl.innerText.trim()} (${descEl
+      ? descEl.innerText.trim()
+      : "Clear"
+    })`
     : "Normal conditions";
 
 
@@ -1050,8 +1046,8 @@ function getAppContext() {
   const availableMarketPrices =
     tableRates.length > 0
       ? tableRates
-          .slice(0, 10)
-          .join(" | ")
+        .slice(0, 10)
+        .join(" | ")
       : "Wheat: ₹2,125/Q | Rice: ₹1,940/Q | Corn: ₹1,850/Q";
 
 
@@ -1197,12 +1193,12 @@ function formatAssistantReply(rawReply) {
         >
 
           ${rawSuggestions
-            .map((q) => {
+        .map((q) => {
 
-              const safeQ =
-                encodeURIComponent(q);
+          const safeQ =
+            encodeURIComponent(q);
 
-              return `
+          return `
 
                 <button
                   type="button"
@@ -1245,8 +1241,8 @@ function formatAssistantReply(rawReply) {
                 </button>
 
               `;
-            })
-            .join("")}
+        })
+        .join("")}
 
         </div>
 
@@ -1390,7 +1386,7 @@ async function sendFarmerMessage(userText) {
 
       throw new Error(
         data.error ||
-          `AI request failed (${response.status})`
+        `AI request failed (${response.status})`
       );
 
     }
@@ -1951,6 +1947,16 @@ function toggleVoice() {
 }
 
 
+
+// CROP HEALTH RESULT BUTTONS
+
+window.continueToCropChatbot = function () {
+  navigateTo("ai-assistant");
+};
+
+window.backToCropHealthStart = function () {
+  navigateTo("crop-health");
+};
 // ============================================================
 // GLOBAL EXPORTS
 // ============================================================
