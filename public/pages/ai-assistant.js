@@ -360,7 +360,15 @@ async function sendFarmerMessage(userText) {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+        messages: messages,
+        context: {
+            location: farmerLocation,
+            weather: currentWeather,
+            availableMarketPrices: marketData,
+            language: selectedLanguage
+              }
+    })
       });
 
       if (response.ok) {
