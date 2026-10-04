@@ -1,76 +1,168 @@
 /* Krishi Sahayak - Global Styles */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  display: inline-block; line-height: 1; text-transform: none;
-  letter-spacing: normal; word-wrap: normal; white-space: nowrap; direction: ltr;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
 }
 
 /* Page visibility */
-.page-content { display: none; animation: fadeIn 0.3s ease; }
-.page-content.active { display: block; }
+.page-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.page-content.active {
+  display: block;
+}
 
 /* Top nav links */
 .nav-top-link {
-  cursor: pointer; font-weight: 500; padding: 4px 12px; border-radius: 8px;
-  color: #78716c; transition: all 0.2s;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 8px;
+  color: #78716c;
+  transition: all 0.2s;
 }
-.nav-top-link:hover { background: #f5f5f4; }
+
+.nav-top-link:hover {
+  background: #f5f5f4;
+}
+
 .nav-top-link.active {
-  color: #166534; font-weight: 600; border-bottom: 2px solid #166534;
+  color: #166534;
+  font-weight: 600;
+  border-bottom: 2px solid #166534;
   border-radius: 0;
 }
 
 /* Side nav links */
 .side-nav-link {
-  display: flex; align-items: center; gap: 12px; padding: 8px 12px;
-  border-radius: 8px; color: #57534e; cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #57534e;
+  cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
-.side-nav-link:hover { background: #e7e5e4; }
+
+.side-nav-link:hover {
+  background: #e7e5e4;
+}
+
 .side-nav-link.active {
-  background: #dcfce7; color: #14532d; font-weight: 700;
+  background: #dcfce7;
+  color: #14532d;
+  font-weight: 700;
 }
 
 /* Bottom nav links */
 .bottom-nav-link {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; padding: 6px 16px; border-radius: 12px;
-  color: #a8a29e; cursor: pointer; transition: transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  border-radius: 12px;
+  color: #a8a29e;
+  cursor: pointer;
+  transition: transform 0.15s;
 }
-.bottom-nav-link:active { transform: scale(0.9); }
+
+.bottom-nav-link:active {
+  transform: scale(0.9);
+}
+
 .bottom-nav-link.active {
-  background: #f0fdf4; color: #166534;
+  background: #f0fdf4;
+  color: #166534;
 }
 
 /* Chat styles */
 .chat-bubble-ai {
-  background: #f5f5f4; padding: 16px; border-radius: 16px;
-  border-top-left-radius: 0; border: 1px solid #f5f5f4;
+  background: #f5f5f4;
+  padding: 16px;
+  border-radius: 16px;
+  border-top-left-radius: 0;
+  border: 1px solid #f5f5f4;
 }
+
 .chat-bubble-user {
-  background: #154212; color: white; padding: 16px;
-  border-radius: 16px; border-top-right-radius: 0;
+  background: #154212;
+  color: white;
+  padding: 16px;
+  border-radius: 16px;
+  border-top-right-radius: 0;
 }
 
 /* Chart gradient */
 .chart-gradient {
-  background: linear-gradient(180deg, rgba(45,90,39,0.1) 0%, rgba(45,90,39,0) 100%);
+  background: linear-gradient(180deg, rgba(45, 90, 39, 0.1) 0%, rgba(45, 90, 39, 0) 100%);
 }
 
 /* Animate pulse for typing indicator */
-@keyframes pulse-dot { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
-.typing-dot { animation: pulse-dot 1.4s infinite ease-in-out; }
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse-dot {
+
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+  }
+
+  40% {
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  animation: pulse-dot 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
 
 /* Smooth page transitions */
-.page-content { animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.page-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* Scrollbar styling */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #c2c9bb; border-radius: 3px; }
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c2c9bb;
+  border-radius: 3px;
+}
 
 /* ==========================================
    🌓 GLOBAL DARK MODE OVERRIDES
@@ -459,96 +551,96 @@ html.dark #languageMenu .language-option:hover {
 ================================ */
 
 .snap-track-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
 }
 
 .snap-track-box {
-    width: min(90%, 700px);
-    max-height: 90vh;
-    overflow: auto;
-    background: #fff;
-    border-radius: 18px;
-    padding: 20px;
+  width: min(90%, 700px);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
 }
 
 .snap-track-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .snap-track-header h2 {
-    margin: 0;
+  margin: 0;
 }
 
 .snap-track-header button {
-    border: none;
-    background: transparent;
-    font-size: 24px;
-    cursor: pointer;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .snap-track-image-container {
-    position: relative;
-    width: 100%;
-    text-align: center;
-    overflow: hidden;
-    border-radius: 12px;
-    background: #111;
+  position: relative;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #111;
 }
 
 #snap-track-image {
-    display: block;
-    width: 100%;
-    height: auto;
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 #tracking-box {
-    display: none;
-    position: absolute;
-    border: 3px solid #00ff66;
-    background: rgba(0, 255, 100, 0.12);
-    box-sizing: border-box;
-    pointer-events: none;
+  display: none;
+  position: absolute;
+  border: 3px solid #00ff66;
+  background: rgba(0, 255, 100, 0.12);
+  box-sizing: border-box;
+  pointer-events: none;
 }
 
 #tracking-box span {
-    position: absolute;
-    top: -28px;
-    left: 0;
-    background: #00a84f;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 5px;
-    font-size: 12px;
+  position: absolute;
+  top: -28px;
+  left: 0;
+  background: #00a84f;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
 }
 
 .snap-track-status {
-    text-align: center;
-    padding: 18px 5px 5px;
+  text-align: center;
+  padding: 18px 5px 5px;
 }
 
 .snap-loader {
-    width: 24px;
-    height: 24px;
-    border: 3px solid #ddd;
-    border-top: 3px solid #198754;
-    border-radius: 50%;
-    animation: snapSpin 0.8s linear infinite;
-    margin: auto;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ddd;
+  border-top: 3px solid #198754;
+  border-radius: 50%;
+  animation: snapSpin 0.8s linear infinite;
+  margin: auto;
 }
 
 @keyframes snapSpin {
-    to {
-        transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ==========================================
@@ -601,11 +693,13 @@ html.dark .bg-amber-500\/10,
 html.dark .bg-yellow-500\/10,
 html.dark [class*="bg-amber-500\/"],
 html.dark [class*="bg-yellow-500\/"] {
-  background-color: #1e261f !important; /* Elevated forest-slate surface */
+  background-color: #1e261f !important;
+  /* Elevated forest-slate surface */
   border-top: 1px solid #2a382b !important;
   border-right: 1px solid #2a382b !important;
   border-bottom: 1px solid #2a382b !important;
-  border-left: 5px solid #eab308 !important; /* Prominent amber-gold bar */
+  border-left: 5px solid #eab308 !important;
+  /* Prominent amber-gold bar */
   border-radius: 12px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
 }
@@ -663,7 +757,7 @@ html.dark .material-symbols-outlined.text-orange-500 {
    ========================================================================== */
 
 /* Equipment cards (Face Mask, Gloves, Goggles, Boots) */
-html.dark .grid > div[class*="rounded"]:has(.material-symbols-outlined),
+html.dark .grid>div[class*="rounded"]:has(.material-symbols-outlined),
 html.dark div:has(> .material-symbols-outlined:is(.text-orange-500, .text-amber-500)) {
   background-color: #1a1e1c !important;
   border-color: #2a332d !important;
@@ -674,4 +768,48 @@ html.dark #page-crop-health [class*="border-dashed"],
 html.dark .crop-health-page [class*="border-dashed"] {
   background-color: #171b18 !important;
   border-color: #2f3832 !important;
+}
+
+
+
+/* ==========================================
+   🌿 CROP HEALTH TEXT VISIBILITY IN DARK MODE
+   ========================================== */
+
+html.dark #page-crop-health .text-stone-900,
+html.dark #page-crop-health .text-stone-800,
+html.dark #page-crop-health .text-stone-700,
+html.dark #page-crop-health .text-gray-800,
+html.dark #page-crop-health .text-gray-700,
+html.dark #page-crop-health .text-\[\#191c1c\],
+html.dark #page-crop-health .text-\[\#42493e\] {
+  color: #f1f5f2 !important;
+}
+
+html.dark #page-crop-health .text-stone-600,
+html.dark #page-crop-health .text-stone-500,
+html.dark #page-crop-health .text-gray-600,
+html.dark #page-crop-health .text-gray-500,
+html.dark #page-crop-health .text-stone-400 {
+  color: #cbd5e1 !important;
+}
+
+html.dark #page-crop-health h1,
+html.dark #page-crop-health h2,
+html.dark #page-crop-health h3,
+html.dark #page-crop-health h4 {
+  color: #f8fafc !important;
+}
+
+html.dark #page-crop-health p,
+html.dark #page-crop-health label,
+html.dark #page-crop-health span {
+  color: #e2e8f0;
+}
+
+/* Keep green headings readable */
+html.dark #page-crop-health .text-green-800,
+html.dark #page-crop-health .text-green-700,
+html.dark #page-crop-health .text-green-600 {
+  color: #86efac !important;
 }
