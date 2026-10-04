@@ -528,7 +528,7 @@ async function handleImageUpload(event) {
 
                 const response =
                     await fetch(
-                        "/api/crop-diagnosis",
+                       "http://127.0.0.1:5000/api/crop-diagnosis",
                         {
                             method: "POST",
 
